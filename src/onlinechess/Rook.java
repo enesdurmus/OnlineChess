@@ -18,9 +18,9 @@ public class Rook extends Piece {
         super(square, board, name);
 
         if (name.equals("wRook1") || name.equals("wRook2")) {
-            labelPiece.setIcon(new ImageIcon(getClass().getResource("/Images/WhiteRook.png")));
+            getLabelPiece().setIcon(new ImageIcon(getClass().getResource("/Images/WhiteRook.png")));
         } else {
-            labelPiece.setIcon(new ImageIcon(getClass().getResource("/Images/BlackRook.png")));
+            getLabelPiece().setIcon(new ImageIcon(getClass().getResource("/Images/BlackRook.png")));
         }
     }
 }

@@ -18,9 +18,9 @@ public class Bishop extends Piece {
         super(square, board, name);
 
         if (name.equals("wBishop1") || name.equals("wBishop2")) {
-            labelPiece.setIcon(new ImageIcon(getClass().getResource("/Images/WhiteBishop.png")));
+            getLabelPiece().setIcon(new ImageIcon(getClass().getResource("/Images/WhiteBishop.png")));
         } else {
-            labelPiece.setIcon(new ImageIcon(getClass().getResource("/Images/BlackBishop.png")));
+            getLabelPiece().setIcon(new ImageIcon(getClass().getResource("/Images/BlackBishop.png")));
         }
     }
 

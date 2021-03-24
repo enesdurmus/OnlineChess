@@ -5,6 +5,8 @@
  */
 package onlinechess;
 
+import java.util.ArrayList;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
@@ -15,13 +17,17 @@ import javax.swing.JPanel;
  */
 public class Piece {
 
-    protected JLabel labelPiece;
-    protected int square;
-    protected JLayeredPane board;
-    protected String name;
+    private JLabel labelPiece;
+    private int square;
+    private JLayeredPane board;
+    private String name;
+    private ArrayList<Integer> squaresCanGo;
+    public ArrayList<JLabel> greenDots;
 
     public Piece(int square, JLayeredPane board, String name) {
-
+        squaresCanGo = new ArrayList<>();
+        greenDots = new ArrayList<>();
+        squaresCanGo.add(30);
         this.square = square;
         this.board = board;
         this.name = name;
@@ -32,6 +38,33 @@ public class Piece {
     }
 
     public void Move(int square) {
+        setSquare(square);
+        JPanel panel = (JPanel) getBoard().getComponent(square);
+        System.out.println(getBoard().getComponent(square).getName());
+        panel.add(getLabelPiece());
+        ClearGreenDots();
+    }
+
+    public void SquaresCanGo() {
+
+    }
+
+    public void DrawnGreenDots() {
+        squaresCanGo.forEach((s) -> {
+            JPanel panel = (JPanel) getBoard().getComponent(s);
+            JLabel greenDot = new JLabel();
+            greenDot.setName(String.valueOf(s));
+            greenDot.setIcon(new ImageIcon(getClass().getResource("/Images/GreenDot.png")));
+            greenDots.add(greenDot);
+            panel.add(greenDot);
+        });
+    }
+
+    public void ClearGreenDots() {
+        greenDots.forEach((greenDot) -> {
+            greenDot.getParent().remove(greenDot);
+        });
+        greenDots.clear();
     }
 
     public void setSquare(int square) {
@@ -40,6 +73,30 @@ public class Piece {
 
     public int getSquare() {
         return square;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setBoard(JLayeredPane board) {
+        this.board = board;
+    }
+
+    public JLayeredPane getBoard() {
+        return board;
+    }
+
+    public JLabel getLabelPiece() {
+        return labelPiece;
+    }
+
+    public void setLabelPiece(JLabel labelPiece) {
+        this.labelPiece = labelPiece;
     }
 
 }

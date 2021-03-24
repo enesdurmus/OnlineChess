@@ -19,9 +19,9 @@ public class Pawn extends Piece {
 
         if (name.equals("wPawn1") || name.equals("wPawn2") || name.equals("wPawn3") || name.equals("wPawn4")
                 || name.equals("wPawn5") || name.equals("wPawn6") || name.equals("wPawn7") || name.equals("wPawn8")) {
-            labelPiece.setIcon(new ImageIcon(getClass().getResource("/Images/WhitePawn.png")));
+            getLabelPiece().setIcon(new ImageIcon(getClass().getResource("/Images/WhitePawn.png")));
         } else {
-            labelPiece.setIcon(new ImageIcon(getClass().getResource("/Images/BlackPawn.png")));
+            getLabelPiece().setIcon(new ImageIcon(getClass().getResource("/Images/BlackPawn.png")));
         }
     }
 }

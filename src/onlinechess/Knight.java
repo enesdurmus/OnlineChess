@@ -18,9 +18,9 @@ public class Knight extends Piece {
         super(square, board, name);
 
         if (name.equals("wKnight1") || name.equals("wKnight2")) {
-            labelPiece.setIcon(new ImageIcon(getClass().getResource("/Images/WhiteKnight.png")));
+             getLabelPiece().setIcon(new ImageIcon(getClass().getResource("/Images/WhiteKnight.png")));
         } else {
-            labelPiece.setIcon(new ImageIcon(getClass().getResource("/Images/BlackKnight.png")));
+             getLabelPiece().setIcon(new ImageIcon(getClass().getResource("/Images/BlackKnight.png")));
         }
 
     }

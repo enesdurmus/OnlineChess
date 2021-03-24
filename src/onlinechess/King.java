@@ -19,17 +19,15 @@ public class King extends Piece {
         super(square, board, name);
 
         if (name.equals("wKing")) {
-            labelPiece.setIcon(new ImageIcon(getClass().getResource("/Images/WhiteKing.png")));
+            getLabelPiece().setIcon(new ImageIcon(getClass().getResource("/Images/WhiteKing.png")));
         } else {
-            labelPiece.setIcon(new ImageIcon(getClass().getResource("/Images/BlackKing.png")));
+            getLabelPiece().setIcon(new ImageIcon(getClass().getResource("/Images/BlackKing.png")));
         }
-
     }
 
     @Override
-    public void Move(int square) {
-        setSquare(square);
-        JPanel panel = (JPanel) board.getComponent(square);
-        panel.add(labelPiece);
+    public void SquaresCanGo() {
+        
     }
+
 }

@@ -18,12 +18,13 @@ import javax.swing.SwingUtilities;
  */
 public class Board extends javax.swing.JFrame {
 
+    private String Side;
     private boolean isSelected = false;
     private Container selectedPanel;
     private Color previousColor;
     private Piece selectedPiece;
-    private ArrayList<Piece> wPieces;
-    private ArrayList<Piece> bPieces;
+    private final ArrayList<Piece> myPieces;
+    private final ArrayList<Piece> opponentPieces;
 
     private void DrawSquares() {
         for (int i = 0; i < 64; i++) {
@@ -40,34 +41,71 @@ public class Board extends javax.swing.JFrame {
     }
 
     private void DrawPieces() {
-        wPieces.add(new Rook(0, jLayeredPane1, "bRook1"));
-        wPieces.add(new Knight(1, jLayeredPane1, "bKnight1"));
-        wPieces.add(new Bishop(2, jLayeredPane1, "bBishop1"));
-        wPieces.add(new Queen(3, jLayeredPane1, "bQueen"));
-        wPieces.add(new King(4, jLayeredPane1, "bKing"));
-        wPieces.add(new Bishop(5, jLayeredPane1, "bBishop2"));
-        wPieces.add(new Knight(6, jLayeredPane1, "bKnight2"));
-        wPieces.add(new Rook(7, jLayeredPane1, "bRook2"));
-        for (int i = 1; i <= 8; i++) {
-            wPieces.add(new Pawn(i + 7, jLayeredPane1, "bPawn".concat(String.valueOf(i))));
+
+        if (Side.equals("white")) {
+            opponentPieces.add(new Rook(0, jLayeredPane1, "bRook1"));
+            opponentPieces.add(new Knight(1, jLayeredPane1, "bKnight1"));
+            opponentPieces.add(new Bishop(2, jLayeredPane1, "bBishop1"));
+            opponentPieces.add(new Queen(3, jLayeredPane1, "bQueen"));
+            opponentPieces.add(new King(4, jLayeredPane1, "bKing"));
+            opponentPieces.add(new Bishop(5, jLayeredPane1, "bBishop2"));
+            opponentPieces.add(new Knight(6, jLayeredPane1, "bKnight2"));
+            opponentPieces.add(new Rook(7, jLayeredPane1, "bRook2"));
+            for (int i = 1; i <= 8; i++) {
+                opponentPieces.add(new Pawn(i + 7, jLayeredPane1, "bPawn".concat(String.valueOf(i))));
+            }
+
+            myPieces.add(new Rook(56, jLayeredPane1, "wRook1"));
+            myPieces.add(new Knight(57, jLayeredPane1, "wKnight1"));
+            myPieces.add(new Bishop(58, jLayeredPane1, "wBishop1"));
+            myPieces.add(new Queen(59, jLayeredPane1, "wQueen"));
+            myPieces.add(new King(60, jLayeredPane1, "wKing"));
+            myPieces.add(new Bishop(61, jLayeredPane1, "wBishop2"));
+            myPieces.add(new Knight(62, jLayeredPane1, "wKnight2"));
+            myPieces.add(new Rook(63, jLayeredPane1, "wRook2"));
+            for (int i = 1; i <= 8; i++) {
+                myPieces.add(new Pawn(i + 47, jLayeredPane1, "wPawn".concat(String.valueOf(i))));
+            }
+        } else {
+            myPieces.add(new Rook(56, jLayeredPane1, "bRook1"));
+            myPieces.add(new Knight(57, jLayeredPane1, "bKnight1"));
+            myPieces.add(new Bishop(58, jLayeredPane1, "bBishop1"));
+            myPieces.add(new Queen(60, jLayeredPane1, "bQueen"));
+            myPieces.add(new King(59, jLayeredPane1, "bKing"));
+            myPieces.add(new Bishop(61, jLayeredPane1, "bBishop2"));
+            myPieces.add(new Knight(62, jLayeredPane1, "bKnight2"));
+            myPieces.add(new Rook(63, jLayeredPane1, "bRook2"));
+            for (int i = 1; i <= 8; i++) {
+                myPieces.add(new Pawn(i + 47, jLayeredPane1, "bPawn".concat(String.valueOf(i))));
+            }
+
+            opponentPieces.add(new Rook(0, jLayeredPane1, "wRook1"));
+            opponentPieces.add(new Knight(1, jLayeredPane1, "wKnight1"));
+            opponentPieces.add(new Bishop(2, jLayeredPane1, "wBishop1"));
+            opponentPieces.add(new Queen(4, jLayeredPane1, "wQueen"));
+            opponentPieces.add(new King(3, jLayeredPane1, "wKing"));
+            opponentPieces.add(new Bishop(5, jLayeredPane1, "wBishop2"));
+            opponentPieces.add(new Knight(6, jLayeredPane1, "wKnight2"));
+            opponentPieces.add(new Rook(7, jLayeredPane1, "wRook2"));
+            for (int i = 1; i <= 8; i++) {
+                opponentPieces.add(new Pawn(i + 7, jLayeredPane1, "wPawn".concat(String.valueOf(i))));
+            }
         }
 
-        wPieces.add(new Rook(56, jLayeredPane1, "wRook1"));
-        wPieces.add(new Knight(57, jLayeredPane1, "wKnight1"));
-        wPieces.add(new Bishop(58, jLayeredPane1, "wBishop1"));
-        wPieces.add(new Queen(59, jLayeredPane1, "wQueen"));
-        wPieces.add(new King(60, jLayeredPane1, "wKing"));
-        wPieces.add(new Bishop(61, jLayeredPane1, "wBishop2"));
-        wPieces.add(new Knight(62, jLayeredPane1, "wKnight2"));
-        wPieces.add(new Rook(63, jLayeredPane1, "wRook2"));
-        for (int i = 1; i <= 8; i++) {
-            wPieces.add(new Pawn(i + 47, jLayeredPane1, "wPawn".concat(String.valueOf(i))));
+    }
+
+    private void FindPiece(String name) {
+        for (Piece piece : myPieces) {
+            if (name.equals(piece.getName())) {
+                selectedPiece = piece;
+            }
         }
     }
 
     public Board() {
-        this.wPieces = new ArrayList<>(16);
-        this.bPieces = new ArrayList<>(16);
+        this.opponentPieces = new ArrayList<>(16);
+        this.myPieces = new ArrayList<>(16);
+        this.Side = "black";
 
         initComponents();
 
@@ -126,15 +164,20 @@ public class Board extends javax.swing.JFrame {
 
     private void jLayeredPane1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLayeredPane1MousePressed
         if (!isSelected) {
-            System.out.println(jLayeredPane1.findComponentAt(evt.getPoint()).getName());
-            selectedPanel = jLayeredPane1.findComponentAt(evt.getPoint()).getParent();
-            previousColor = selectedPanel.getBackground();
-            selectedPanel.setBackground(Color.yellow);
-            selectedPiece = wPieces.get(0);
-            isSelected = true;
+            if (jLayeredPane1.findComponentAt(evt.getPoint()).getName().charAt(0) == myPieces.get(0).getName().charAt(0)) {
+                System.out.println(jLayeredPane1.findComponentAt(evt.getPoint()).getName());
+                selectedPanel = jLayeredPane1.findComponentAt(evt.getPoint()).getParent();
+                previousColor = selectedPanel.getBackground();
+                selectedPanel.setBackground(Color.yellow);
+                FindPiece(jLayeredPane1.findComponentAt(evt.getPoint()).getName());
+                selectedPiece.DrawnGreenDots();
+                isSelected = true;
+            }
+
         } else {
             selectedPiece.Move(Integer.valueOf(jLayeredPane1.findComponentAt(evt.getPoint()).getName()));
             selectedPanel.setBackground(previousColor);
+            selectedPiece = null;
             isSelected = false;
         }
 

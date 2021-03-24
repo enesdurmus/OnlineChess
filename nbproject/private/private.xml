@@ -3,15 +3,14 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/X550V/Documents/NetBeansProjects/OnlineChess/src/onlinechess/Knight.java</file>
-            <file>file:/C:/Users/X550V/Documents/NetBeansProjects/OnlineChess/src/onlinechess/Board.java</file>
-            <file>file:/C:/Users/X550V/Documents/NetBeansProjects/OnlineChess/src/onlinechess/King.java</file>
-            <file>file:/C:/Users/X550V/Documents/NetBeansProjects/OnlineChess/src/onlinechess/Piece.java</file>
-            <file>file:/C:/Users/X550V/Documents/NetBeansProjects/OnlineChess/src/onlinechess/Main.java</file>
-            <file>file:/C:/Users/X550V/Documents/NetBeansProjects/OnlineChess/src/onlinechess/Queen.java</file>
-            <file>file:/C:/Users/X550V/Documents/NetBeansProjects/OnlineChess/src/onlinechess/Pawn.java</file>
-            <file>file:/C:/Users/X550V/Documents/NetBeansProjects/OnlineChess/src/onlinechess/Rook.java</file>
-            <file>file:/C:/Users/X550V/Documents/NetBeansProjects/OnlineChess/src/onlinechess/Bishop.java</file>
+            <file>file:/C:/Users/X550V/Desktop/MyProjects/OnlineChess/src/onlinechess/Rook.java</file>
+            <file>file:/C:/Users/X550V/Desktop/MyProjects/OnlineChess/src/onlinechess/King.java</file>
+            <file>file:/C:/Users/X550V/Desktop/MyProjects/OnlineChess/src/onlinechess/Piece.java</file>
+            <file>file:/C:/Users/X550V/Desktop/MyProjects/OnlineChess/src/onlinechess/Board.java</file>
+            <file>file:/C:/Users/X550V/Desktop/MyProjects/OnlineChess/src/onlinechess/Queen.java</file>
+            <file>file:/C:/Users/X550V/Desktop/MyProjects/OnlineChess/src/onlinechess/Pawn.java</file>
+            <file>file:/C:/Users/X550V/Desktop/MyProjects/OnlineChess/src/onlinechess/Knight.java</file>
+            <file>file:/C:/Users/X550V/Desktop/MyProjects/OnlineChess/src/onlinechess/Bishop.java</file>
         </group>
     </open-files>
 </project-private>

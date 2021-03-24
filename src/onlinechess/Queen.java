@@ -18,9 +18,9 @@ public class Queen extends Piece {
         super(square, board, name);
 
         if (name.equals("wQueen") || name.equals("wQueen")) {
-            labelPiece.setIcon(new ImageIcon(getClass().getResource("/Images/WhiteQueen.png")));
+            getLabelPiece().setIcon(new ImageIcon(getClass().getResource("/Images/WhiteQueen.png")));
         } else {
-            labelPiece.setIcon(new ImageIcon(getClass().getResource("/Images/BlackQueen.png")));
+            getLabelPiece().setIcon(new ImageIcon(getClass().getResource("/Images/BlackQueen.png")));
         }
     }
 
