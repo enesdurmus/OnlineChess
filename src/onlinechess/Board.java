@@ -105,7 +105,7 @@ public class Board extends javax.swing.JFrame {
     public Board() {
         this.opponentPieces = new ArrayList<>(16);
         this.myPieces = new ArrayList<>(16);
-        this.Side = "black";
+        this.Side = "white";
 
         initComponents();
 

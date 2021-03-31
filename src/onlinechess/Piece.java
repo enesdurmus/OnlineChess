@@ -28,6 +28,10 @@ public class Piece {
         squaresCanGo = new ArrayList<>();
         greenDots = new ArrayList<>();
         squaresCanGo.add(30);
+        squaresCanGo.add(20);
+
+        squaresCanGo.add(25);
+
         this.square = square;
         this.board = board;
         this.name = name;
@@ -38,11 +42,23 @@ public class Piece {
     }
 
     public void Move(int square) {
-        setSquare(square);
-        JPanel panel = (JPanel) getBoard().getComponent(square);
-        System.out.println(getBoard().getComponent(square).getName());
-        panel.add(getLabelPiece());
+        if (MoveControl(square)) {
+            setSquare(square);
+            JPanel panel = (JPanel) getBoard().getComponent(square);
+            System.out.println(getBoard().getComponent(square).getName());
+            panel.add(getLabelPiece());
+        }
         ClearGreenDots();
+
+    }
+
+    public boolean MoveControl(int s) {
+        for (Integer i : squaresCanGo) {
+            if (i == s) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void SquaresCanGo() {
