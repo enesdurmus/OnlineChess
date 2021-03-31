@@ -21,17 +21,12 @@ public class Piece {
     private int square;
     private JLayeredPane board;
     private String name;
-    private ArrayList<Integer> squaresCanGo;
-    public ArrayList<JLabel> greenDots;
+    public ArrayList<Integer> squaresCanMove;
+    private ArrayList<JLabel> greenDots;
 
     public Piece(int square, JLayeredPane board, String name) {
-        squaresCanGo = new ArrayList<>();
+        squaresCanMove = new ArrayList<>();
         greenDots = new ArrayList<>();
-        squaresCanGo.add(30);
-        squaresCanGo.add(20);
-
-        squaresCanGo.add(25);
-
         this.square = square;
         this.board = board;
         this.name = name;
@@ -53,20 +48,14 @@ public class Piece {
     }
 
     public boolean MoveControl(int s) {
-        for (Integer i : squaresCanGo) {
-            if (i == s) {
-                return true;
-            }
-        }
-        return false;
+        return squaresCanMove.stream().anyMatch((i) -> (i == s));
     }
 
-    public void SquaresCanGo() {
-
+    public void SetSquaresCanMove(ArrayList<Piece> allPieces) {
     }
 
     public void DrawnGreenDots() {
-        squaresCanGo.forEach((s) -> {
+        squaresCanMove.forEach((s) -> {
             JPanel panel = (JPanel) getBoard().getComponent(s);
             JLabel greenDot = new JLabel();
             greenDot.setName(String.valueOf(s));
@@ -107,7 +96,7 @@ public class Piece {
         return board;
     }
 
-    public JLabel getLabelPiece() {
+    public final JLabel getLabelPiece() {
         return labelPiece;
     }
 

@@ -5,9 +5,9 @@
  */
 package onlinechess;
 
+import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import javax.swing.JLayeredPane;
-import javax.swing.JPanel;
 
 /**
  *
@@ -25,9 +25,44 @@ public class King extends Piece {
         }
     }
 
+    /*
+    
+    * * *
+    * s *
+    * * *
+    
+     */
     @Override
-    public void SquaresCanGo() {
-        
+    public void SetSquaresCanMove(ArrayList<Piece> allPieces) {
+        squaresCanMove.clear();
+        boolean isEmpty = true;
+        int a = getSquare() - 9; // start from the left top corner of our king.
+        int row = getSquare() / 8, column = getSquare() % 8; // We get our row and colums so we can ignore squares that we cant go.
+
+        for (int i = 0; i < 3; i++) {   // for rows
+            for (int j = -1; j < 2; j++) {  // for cols
+
+                if (column == 0 && j == - 1 || column == 7 && j == 1 || row == 0 && i == 0 || row == 7 && i == 2) { // We check our positions for impossible squares.
+                    System.out.println("NoWhereToGo");
+                } else {
+                    
+                    for (Piece p : allPieces) {   // We check square if there is any piece.
+                        if (p.getSquare() == a) {
+                            isEmpty = false;
+                            break;
+                        }
+                    }
+
+                    if (isEmpty) {   // if its empty we can move there
+                        squaresCanMove.add(a);
+                    }
+                }
+                a++;
+                isEmpty = true;
+            }
+            a += 5;
+        }
+        System.out.println(squaresCanMove.size());
     }
 
 }

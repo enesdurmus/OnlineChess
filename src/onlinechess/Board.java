@@ -9,6 +9,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.util.ArrayList;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
@@ -18,13 +19,14 @@ import javax.swing.SwingUtilities;
  */
 public class Board extends javax.swing.JFrame {
 
-    private String Side;
+    private final String Side;
     private boolean isSelected = false;
     private Container selectedPanel;
     private Color previousColor;
     private Piece selectedPiece;
     private final ArrayList<Piece> myPieces;
     private final ArrayList<Piece> opponentPieces;
+    private final ArrayList<Piece> allPieces;
 
     private void DrawSquares() {
         for (int i = 0; i < 64; i++) {
@@ -33,9 +35,9 @@ public class Board extends javax.swing.JFrame {
             jLayeredPane1.add(square);
             int row = (i / 8) % 2;
             if (row == 0) {
-                square.setBackground(i % 2 == 0 ? Color.blue : Color.white);
+                square.setBackground(i % 2 == 0 ? new Color(184, 139, 74) : new Color(227, 193, 111));
             } else {
-                square.setBackground(i % 2 == 0 ? Color.white : Color.blue);
+                square.setBackground(i % 2 == 0 ? new Color(227, 193, 111) : new Color(184, 139, 74));
             }
         }
     }
@@ -92,19 +94,53 @@ public class Board extends javax.swing.JFrame {
             }
         }
 
+        allPieces.addAll(myPieces);
+        allPieces.addAll(opponentPieces);
+
     }
 
     private void FindPiece(String name) {
-        for (Piece piece : myPieces) {
-            if (name.equals(piece.getName())) {
-                selectedPiece = piece;
-            }
-        }
+        myPieces.stream().filter((piece) -> (name.equals(piece.getName()))).forEachOrdered((piece) -> {
+            selectedPiece = piece;
+        });
+    }
+
+    private void SelectPiece(JLabel pieceLabel) {
+        System.out.println(pieceLabel.getName());
+        selectedPanel = pieceLabel.getParent();
+        previousColor = selectedPanel.getBackground();
+        selectedPanel.setBackground(Color.yellow);
+        FindPiece(pieceLabel.getName());
+        selectedPiece.SetSquaresCanMove(this.allPieces);
+        selectedPiece.DrawnGreenDots();
+        isSelected = true;
+    }
+
+    private void SelectAnotherPiece(JLabel pieceLabel) {
+        selectedPanel.setBackground(previousColor);
+        selectedPiece.ClearGreenDots();
+        selectedPiece = null;
+        System.out.println(pieceLabel.getName());
+        selectedPanel = pieceLabel.getParent();
+        previousColor = selectedPanel.getBackground();
+        selectedPanel.setBackground(Color.yellow);
+        FindPiece(pieceLabel.getName());
+        selectedPiece.DrawnGreenDots();
+        isSelected = true;
+    }
+
+    private void MovePiece(int square) {
+        selectedPiece.Move(square);
+        selectedPanel.setBackground(previousColor);
+        selectedPiece = null;
+        isSelected = false;
     }
 
     public Board() {
         this.opponentPieces = new ArrayList<>(16);
         this.myPieces = new ArrayList<>(16);
+        this.allPieces = new ArrayList<>(32);
+
         this.Side = "white";
 
         initComponents();
@@ -164,21 +200,24 @@ public class Board extends javax.swing.JFrame {
 
     private void jLayeredPane1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLayeredPane1MousePressed
         if (!isSelected) {
-            if (jLayeredPane1.findComponentAt(evt.getPoint()).getName().charAt(0) == myPieces.get(0).getName().charAt(0)) {
-                System.out.println(jLayeredPane1.findComponentAt(evt.getPoint()).getName());
-                selectedPanel = jLayeredPane1.findComponentAt(evt.getPoint()).getParent();
-                previousColor = selectedPanel.getBackground();
-                selectedPanel.setBackground(Color.yellow);
-                FindPiece(jLayeredPane1.findComponentAt(evt.getPoint()).getName());
-                selectedPiece.DrawnGreenDots();
-                isSelected = true;
+            if (jLayeredPane1.findComponentAt(evt.getPoint()).getName().charAt(0) == Side.charAt(0)) {
+                SelectPiece((JLabel) jLayeredPane1.findComponentAt(evt.getPoint()));
             }
 
+        } else if (isSelected && jLayeredPane1.findComponentAt(evt.getPoint()).getName().charAt(0) == Side.charAt(0)) {
+
+            if (jLayeredPane1.findComponentAt(evt.getPoint()).getName().charAt(0) == Side.charAt(0)) {
+                SelectAnotherPiece((JLabel) jLayeredPane1.findComponentAt(evt.getPoint()));
+            }
+
+        } else if (isSelected && jLayeredPane1.findComponentAt(evt.getPoint()).getName().charAt(0) == opponentPieces.get(0).getName().charAt(0)) {
+
+            System.out.println("yeme metodu");
+
         } else {
-            selectedPiece.Move(Integer.valueOf(jLayeredPane1.findComponentAt(evt.getPoint()).getName()));
-            selectedPanel.setBackground(previousColor);
-            selectedPiece = null;
-            isSelected = false;
+
+            MovePiece(Integer.valueOf(jLayeredPane1.findComponentAt(evt.getPoint()).getName()));
+
         }
 
         SwingUtilities.updateComponentTreeUI(jLayeredPane1);
