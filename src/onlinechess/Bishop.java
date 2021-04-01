@@ -5,6 +5,7 @@
  */
 package onlinechess;
 
+import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import javax.swing.JLayeredPane;
 
@@ -22,6 +23,22 @@ public class Bishop extends Piece {
         } else {
             getLabelPiece().setIcon(new ImageIcon(getClass().getResource("/Images/BlackBishop.png")));
         }
+    }
+
+    @Override
+    public void SetSquaresCanMove(ArrayList<Piece> allPieces) {
+  /*      squaresCanMove.clear();
+        attackablePieces.clear();
+        boolean isEmpty = true;
+
+        int row = getSquare() / 8, column = getSquare() % 8; // We get our row and colums so we can ignore squares that we cant go.
+
+        
+        //To the top right corner
+        for (int i = 0; i < 10; i++) {
+            
+        }*/
+        
     }
 
 }

@@ -35,6 +35,7 @@ public class King extends Piece {
     @Override
     public void SetSquaresCanMove(ArrayList<Piece> allPieces) {
         squaresCanMove.clear();
+        attackablePieces.clear();
         boolean isEmpty = true;
         int a = getSquare() - 9; // start from the left top corner of our king.
         int row = getSquare() / 8, column = getSquare() % 8; // We get our row and colums so we can ignore squares that we cant go.
@@ -45,9 +46,12 @@ public class King extends Piece {
                 if (column == 0 && j == - 1 || column == 7 && j == 1 || row == 0 && i == 0 || row == 7 && i == 2) { // We check our positions for impossible squares.
                     System.out.println("NoWhereToGo");
                 } else {
-                    
+
                     for (Piece p : allPieces) {   // We check square if there is any piece.
                         if (p.getSquare() == a) {
+                            if (p.getName().charAt(0) != getName().charAt(0)) {
+                                attackablePieces.add(p);
+                            }
                             isEmpty = false;
                             break;
                         }
@@ -62,7 +66,5 @@ public class King extends Piece {
             }
             a += 5;
         }
-        System.out.println(squaresCanMove.size());
     }
-
 }

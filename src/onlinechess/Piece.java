@@ -22,11 +22,16 @@ public class Piece {
     private JLayeredPane board;
     private String name;
     public ArrayList<Integer> squaresCanMove;
+    public ArrayList<Piece> attackablePieces;
     private ArrayList<JLabel> greenDots;
+    private ArrayList<JLabel> greenFrames;
 
     public Piece(int square, JLayeredPane board, String name) {
         squaresCanMove = new ArrayList<>();
+        attackablePieces = new ArrayList<>();
         greenDots = new ArrayList<>();
+        greenFrames = new ArrayList<>();
+
         this.square = square;
         this.board = board;
         this.name = name;
@@ -37,6 +42,7 @@ public class Piece {
     }
 
     public void Move(int square) {
+
         if (MoveControl(square)) {
             setSquare(square);
             JPanel panel = (JPanel) getBoard().getComponent(square);
@@ -44,7 +50,7 @@ public class Piece {
             panel.add(getLabelPiece());
         }
         ClearGreenDots();
-
+        ClearGreenFrames();
     }
 
     public boolean MoveControl(int s) {
@@ -54,7 +60,7 @@ public class Piece {
     public void SetSquaresCanMove(ArrayList<Piece> allPieces) {
     }
 
-    public void DrawnGreenDots() {
+    public void DrawGreenDots() {
         squaresCanMove.forEach((s) -> {
             JPanel panel = (JPanel) getBoard().getComponent(s);
             JLabel greenDot = new JLabel();
@@ -65,11 +71,29 @@ public class Piece {
         });
     }
 
+    public void DrawGreenFrames() {
+        attackablePieces.forEach((s) -> {
+            JPanel panel = (JPanel) getBoard().getComponent(s.getSquare());
+            JLabel greenFrame = new JLabel();
+            greenFrame.setName(String.valueOf(s));
+            greenFrame.setIcon(new ImageIcon(getClass().getResource("/Images/GreenFrame.png")));
+            greenFrames.add(greenFrame);
+            panel.add(greenFrame);
+        });
+    }
+
     public void ClearGreenDots() {
         greenDots.forEach((greenDot) -> {
             greenDot.getParent().remove(greenDot);
         });
         greenDots.clear();
+    }
+
+    public void ClearGreenFrames() {
+        greenFrames.forEach((greenFrame) -> {
+            greenFrame.getParent().remove(greenFrame);
+        });
+        greenFrames.clear();
     }
 
     public void setSquare(int square) {

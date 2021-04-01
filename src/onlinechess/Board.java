@@ -64,7 +64,7 @@ public class Board extends javax.swing.JFrame {
             myPieces.add(new King(60, jLayeredPane1, "wKing"));
             myPieces.add(new Bishop(61, jLayeredPane1, "wBishop2"));
             myPieces.add(new Knight(62, jLayeredPane1, "wKnight2"));
-            myPieces.add(new Rook(63, jLayeredPane1, "wRook2"));
+            myPieces.add(new Rook(35, jLayeredPane1, "wRook2"));
             for (int i = 1; i <= 8; i++) {
                 myPieces.add(new Pawn(i + 47, jLayeredPane1, "wPawn".concat(String.valueOf(i))));
             }
@@ -102,6 +102,9 @@ public class Board extends javax.swing.JFrame {
     private void FindPiece(String name) {
         myPieces.stream().filter((piece) -> (name.equals(piece.getName()))).forEachOrdered((piece) -> {
             selectedPiece = piece;
+            selectedPiece.SetSquaresCanMove(this.allPieces);
+            selectedPiece.DrawGreenDots();
+            selectedPiece.DrawGreenFrames();
         });
     }
 
@@ -109,24 +112,17 @@ public class Board extends javax.swing.JFrame {
         System.out.println(pieceLabel.getName());
         selectedPanel = pieceLabel.getParent();
         previousColor = selectedPanel.getBackground();
-        selectedPanel.setBackground(Color.yellow);
+        selectedPanel.setBackground(new Color(118,150,86));
         FindPiece(pieceLabel.getName());
-        selectedPiece.SetSquaresCanMove(this.allPieces);
-        selectedPiece.DrawnGreenDots();
         isSelected = true;
     }
 
     private void SelectAnotherPiece(JLabel pieceLabel) {
         selectedPanel.setBackground(previousColor);
         selectedPiece.ClearGreenDots();
+        selectedPiece.ClearGreenFrames();
         selectedPiece = null;
-        System.out.println(pieceLabel.getName());
-        selectedPanel = pieceLabel.getParent();
-        previousColor = selectedPanel.getBackground();
-        selectedPanel.setBackground(Color.yellow);
-        FindPiece(pieceLabel.getName());
-        selectedPiece.DrawnGreenDots();
-        isSelected = true;
+        SelectPiece(pieceLabel);
     }
 
     private void MovePiece(int square) {
@@ -141,7 +137,7 @@ public class Board extends javax.swing.JFrame {
         this.myPieces = new ArrayList<>(16);
         this.allPieces = new ArrayList<>(32);
 
-        this.Side = "white";
+        this.Side = "black";
 
         initComponents();
 
@@ -264,6 +260,7 @@ public class Board extends javax.swing.JFrame {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
             public void run() {
 
                 new Board().setVisible(true);
