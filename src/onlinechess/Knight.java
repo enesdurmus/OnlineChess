@@ -61,7 +61,7 @@ public class Knight extends Piece {
                 squaresCanMove.add(getSquare() + 8 * i - x);
             }
             //for the right
-            if ((getSquare() + 8 * i + x) % 8 > column && getSquare() + 8 * i - x <= 63 && CheckAllPieces(allPieces, getSquare() + 8 * i + x, isEmpty)) {
+            if ((getSquare() + 8 * i + x) % 8 > column && getSquare() + 8 * i + x <= 63 && CheckAllPieces(allPieces, getSquare() + 8 * i + x, isEmpty)) {
                 squaresCanMove.add(getSquare() + 8 * i + x);
             }
             x--;

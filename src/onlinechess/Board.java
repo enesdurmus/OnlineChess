@@ -27,6 +27,7 @@ public class Board extends javax.swing.JFrame {
     private final ArrayList<Piece> myPieces;
     private final ArrayList<Piece> opponentPieces;
     private final ArrayList<Piece> allPieces;
+    private static StopWatch stopWatch;
 
     private void DrawSquares() {
         for (int i = 0; i < 64; i++) {
@@ -144,6 +145,8 @@ public class Board extends javax.swing.JFrame {
         DrawSquares();
 
         DrawPieces();
+        stopWatch = new StopWatch();
+        stopWatch.start();
     }
 
     @SuppressWarnings("unchecked")
@@ -151,6 +154,7 @@ public class Board extends javax.swing.JFrame {
     private void initComponents() {
 
         jLayeredPane1 = new javax.swing.JLayeredPane();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -170,19 +174,29 @@ public class Board extends javax.swing.JFrame {
         });
         jLayeredPane1.setLayout(new java.awt.GridLayout(8, 8));
 
+        jLabel1.setText("jLabel1");
+        jLabel1.setToolTipText("");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(144, 144, 144)
-                .addComponent(jLayeredPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(156, 156, 156))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(144, 144, 144)
+                        .addComponent(jLayeredPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(673, 673, 673)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(103, 103, 103)
+                .addContainerGap()
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(39, 39, 39)
                 .addComponent(jLayeredPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(197, Short.MAX_VALUE))
         );
@@ -214,7 +228,7 @@ public class Board extends javax.swing.JFrame {
             MovePiece(Integer.valueOf(jLayeredPane1.findComponentAt(evt.getPoint()).getName()));
 
         }
-
+        System.out.println(stopWatch.toString());
         SwingUtilities.updateComponentTreeUI(jLayeredPane1);
     }//GEN-LAST:event_jLayeredPane1MousePressed
 
@@ -261,13 +275,13 @@ public class Board extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
-
                 new Board().setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLayeredPane jLayeredPane1;
     // End of variables declaration//GEN-END:variables
 }
