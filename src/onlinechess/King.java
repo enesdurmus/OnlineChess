@@ -47,15 +47,7 @@ public class King extends Piece {
                     System.out.println("NoWhereToGo");
                 } else {
 
-                    for (Piece p : allPieces) {   // We check square if there is any piece.
-                        if (p.getSquare() == a) {
-                            if (p.getName().charAt(0) != getName().charAt(0)) {
-                                attackablePieces.add(p);
-                            }
-                            isEmpty = false;
-                            break;
-                        }
-                    }
+                    isEmpty = CheckAllPieces(allPieces, a, isEmpty);
 
                     if (isEmpty) {   // if its empty we can move there
                         squaresCanMove.add(a);

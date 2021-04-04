@@ -63,8 +63,8 @@ public class Board extends javax.swing.JFrame {
             myPieces.add(new Queen(59, jLayeredPane1, "wQueen"));
             myPieces.add(new King(60, jLayeredPane1, "wKing"));
             myPieces.add(new Bishop(61, jLayeredPane1, "wBishop2"));
-            myPieces.add(new Knight(62, jLayeredPane1, "wKnight2"));
-            myPieces.add(new Rook(35, jLayeredPane1, "wRook2"));
+            myPieces.add(new Knight(35, jLayeredPane1, "wKnight2"));
+            myPieces.add(new Rook(63, jLayeredPane1, "wRook2"));
             for (int i = 1; i <= 8; i++) {
                 myPieces.add(new Pawn(i + 47, jLayeredPane1, "wPawn".concat(String.valueOf(i))));
             }
@@ -112,7 +112,7 @@ public class Board extends javax.swing.JFrame {
         System.out.println(pieceLabel.getName());
         selectedPanel = pieceLabel.getParent();
         previousColor = selectedPanel.getBackground();
-        selectedPanel.setBackground(new Color(118,150,86));
+        selectedPanel.setBackground(new Color(118, 150, 86));
         FindPiece(pieceLabel.getName());
         isSelected = true;
     }
@@ -137,7 +137,7 @@ public class Board extends javax.swing.JFrame {
         this.myPieces = new ArrayList<>(16);
         this.allPieces = new ArrayList<>(32);
 
-        this.Side = "black";
+        this.Side = "white";
 
         initComponents();
 
@@ -153,7 +153,6 @@ public class Board extends javax.swing.JFrame {
         jLayeredPane1 = new javax.swing.JLayeredPane();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(800, 800));
 
         jLayeredPane1.setPreferredSize(new java.awt.Dimension(500, 500));
         jLayeredPane1.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
@@ -175,17 +174,17 @@ public class Board extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(164, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(144, 144, 144)
                 .addComponent(jLayeredPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(136, 136, 136))
+                .addGap(156, 156, 156))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(92, 92, 92)
+                .addGap(103, 103, 103)
                 .addComponent(jLayeredPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(208, Short.MAX_VALUE))
+                .addContainerGap(197, Short.MAX_VALUE))
         );
 
         pack();

@@ -40,80 +40,32 @@ public class Pawn extends Piece {
         if (hasMoved) {
             switch (column) {
                 case 0:
-                    for (Piece p : allPieces) {   // We check square if there is any piece.
-                        if (p.getSquare() == getSquare() - 7) {
-                            if (p.getName().charAt(0) != getName().charAt(0)) {
-                                attackablePieces.add(p);
-                            }
-                        } else if (p.getSquare() == getSquare() - 8) {
-                            isEmpty = false;
-                        }
-                    }
+                    isEmpty = ChechAllPiecesHasMoved(allPieces, isEmpty, 7);
                     break;
                 case 7:
-                    for (Piece p : allPieces) {   // We check square if there is any piece.
-                        if (p.getSquare() == getSquare() - 9) {
-                            if (p.getName().charAt(0) != getName().charAt(0)) {
-                                attackablePieces.add(p);
-                            }
-                        } else if (p.getSquare() == getSquare() - 8) {
-                            isEmpty = false;
-                        }
-                    }
+                    isEmpty = ChechAllPiecesHasMoved(allPieces, isEmpty, 9);
                     break;
                 default:
-                    for (Piece p : allPieces) {   // We check square if there is any piece.
-                        if (p.getSquare() == getSquare() - 7 || p.getSquare() == getSquare() - 9) {
-                            if (p.getName().charAt(0) != getName().charAt(0)) {
-                                attackablePieces.add(p);
-                            }
-                        } else if (p.getSquare() == getSquare() - 8) {
-                            isEmpty = false;
-                        }
-                    }
+                    isEmpty = ChechAllPiecesHasMoved(allPieces, isEmpty, 7, 9);
                     break;
             }
         } else {
             switch (column) {
                 case 0:
-                    for (Piece p : allPieces) {   // We check square if there is any piece.
-                        if (p.getSquare() == getSquare() - 7) {
-                            if (p.getName().charAt(0) != getName().charAt(0)) {
-                                attackablePieces.add(p);
-                            }
-                        } else if (p.getSquare() == getSquare() - 8) {
-                            isEmpty = false;
-                        } else if (p.getSquare() == getSquare() - 16) {
-                            isSecondSquareEmpty = false;
-                        }
-                    }
+                    boolean a[] = ChechAllPiecesHasntMoved(allPieces, isEmpty, isSecondSquareEmpty, 7);
+                    isEmpty = a[0];
+                    isSecondSquareEmpty = a[1];
                     break;
                 case 7:
-                    for (Piece p : allPieces) {   // We check square if there is any piece.
-                        if (p.getSquare() == getSquare() - 9) {
-                            if (p.getName().charAt(0) != getName().charAt(0)) {
-                                attackablePieces.add(p);
-                            }
-                        } else if (p.getSquare() == getSquare() - 8) {
-                            isEmpty = false;
-                        } else if (p.getSquare() == getSquare() - 16) {
-                            isSecondSquareEmpty = false;
-                        }
-                    }
-                    break;
+                    a = ChechAllPiecesHasntMoved(allPieces, isEmpty, isSecondSquareEmpty, 9);
+                    isEmpty = a[0];
+                    isSecondSquareEmpty = a[1];
                 default:
-                    for (Piece p : allPieces) {   // We check square if there is any piece.
-                        if (p.getSquare() == getSquare() - 7 || p.getSquare() == getSquare() - 9) {
-                            if (p.getName().charAt(0) != getName().charAt(0)) {
-                                attackablePieces.add(p);
-                            }
-                        } else if (p.getSquare() == getSquare() - 8) {
-                            isEmpty = false;
-                        }
-                    }
+                    a = ChechAllPiecesHasntMoved(allPieces, isEmpty, isSecondSquareEmpty, 7, 9);
+                    isEmpty = a[0];
+                    isSecondSquareEmpty = a[1];
                     break;
             }
-
         }
 
         if (isEmpty) {
@@ -134,4 +86,69 @@ public class Pawn extends Piece {
         hasMoved = true;
     }
 
+    public boolean ChechAllPiecesHasMoved(ArrayList<Piece> allPieces, boolean isEmpty, int n) {
+        for (Piece p : allPieces) {   // We check square if there is any piece.
+            if (p.getSquare() == getSquare() - n) {
+                if (p.getName().charAt(0) != getName().charAt(0)) {
+                    attackablePieces.add(p);
+                }
+            } else if (p.getSquare() == getSquare() - 8) {
+                isEmpty = false;
+            }
+        }
+        return isEmpty;
+    }
+
+    public boolean ChechAllPiecesHasMoved(ArrayList<Piece> allPieces, boolean isEmpty, int n, int n2) {
+        for (Piece p : allPieces) {   // We check square if there is any piece.
+            if (p.getSquare() == getSquare() - n || p.getSquare() == getSquare() - n2) {
+                if (p.getName().charAt(0) != getName().charAt(0)) {
+                    attackablePieces.add(p);
+                }
+            } else if (p.getSquare() == getSquare() - 8) {
+                isEmpty = false;
+            }
+        }
+        return isEmpty;
+    }
+
+    public boolean[] ChechAllPiecesHasntMoved(ArrayList<Piece> allPieces, boolean isEmpty, boolean isSecondSquareEmpty, int n) {
+        boolean a[] = new boolean[2];
+
+        for (Piece p : allPieces) {   // We check square if there is any piece.
+            if (p.getSquare() == getSquare() - n) {
+                if (p.getName().charAt(0) != getName().charAt(0)) {
+                    attackablePieces.add(p);
+                }
+            } else if (p.getSquare() == getSquare() - 8) {
+                isEmpty = false;
+            } else if (p.getSquare() == getSquare() - 16) {
+                isSecondSquareEmpty = false;
+            }
+        }
+        a[0] = isEmpty;
+        a[1] = isSecondSquareEmpty;
+
+        return a;
+    }
+
+    public boolean[] ChechAllPiecesHasntMoved(ArrayList<Piece> allPieces, boolean isEmpty, boolean isSecondSquareEmpty, int n, int n2) {
+        boolean a[] = new boolean[2];
+
+        for (Piece p : allPieces) {   // We check square if there is any piece.
+            if (p.getSquare() == getSquare() - n || p.getSquare() == getSquare() - n2) {
+                if (p.getName().charAt(0) != getName().charAt(0)) {
+                    attackablePieces.add(p);
+                }
+            } else if (p.getSquare() == getSquare() - 8) {
+                isEmpty = false;
+            } else if (p.getSquare() == getSquare() - 16) {
+                isSecondSquareEmpty = false;
+            }
+        }
+        a[0] = isEmpty;
+        a[1] = isSecondSquareEmpty;
+
+        return a;
+    }
 }

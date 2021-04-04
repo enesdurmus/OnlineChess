@@ -60,6 +60,22 @@ public class Piece {
     public void SetSquaresCanMove(ArrayList<Piece> allPieces) {
     }
 
+    public boolean CheckAllPieces(ArrayList<Piece> allPieces, int square, boolean isEmpty) {
+        for (Piece p : allPieces) {   // We check square if there is any piece.
+            if (p.getSquare() == square) {
+                if (p.getName().charAt(0) != getName().charAt(0)) {
+                    attackablePieces.add(p);
+                    isEmpty = false;
+                    break;
+                } else if (p.getName().charAt(0) == getName().charAt(0)) {
+                    isEmpty = false;
+                    break;
+                }
+            }
+        }
+        return isEmpty;
+    }
+
     public void DrawGreenDots() {
         squaresCanMove.forEach((s) -> {
             JPanel panel = (JPanel) getBoard().getComponent(s);
