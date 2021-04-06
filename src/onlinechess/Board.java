@@ -9,11 +9,11 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-import javax.swing.Timer;
-import javax.xml.bind.Marshaller;
 
 /**
  *
@@ -22,6 +22,7 @@ import javax.xml.bind.Marshaller;
 public class Board extends javax.swing.JFrame {
 
     private final String Side;
+
     private boolean isSelected = false;
     private Container selectedPanel;
     private Color previousColor;
@@ -29,7 +30,8 @@ public class Board extends javax.swing.JFrame {
     private final ArrayList<Piece> myPieces;
     private final ArrayList<Piece> opponentPieces;
     private final ArrayList<Piece> allPieces;
-    private static StopWatch stopWatch;
+    private Timer timer;
+    // private Timer opponentTimer;
 
     private void DrawSquares() {
         for (int i = 0; i < 64; i++) {
@@ -102,6 +104,10 @@ public class Board extends javax.swing.JFrame {
 
     }
 
+    private void naber() {
+        System.out.println("naber");
+    }
+
     private void FindPiece(String name) {
         myPieces.stream().filter((piece) -> (name.equals(piece.getName()))).forEachOrdered((piece) -> {
             selectedPiece = piece;
@@ -134,6 +140,11 @@ public class Board extends javax.swing.JFrame {
         selectedPanel.setBackground(previousColor);
         selectedPiece = null;
         isSelected = false;
+        if (timer.GetIsRunning()) {
+            timer.PauseTimer();
+        } else {
+            timer.ResumeTimer();
+        }
     }
 
     private void AttackPiece(String name) {
@@ -145,29 +156,41 @@ public class Board extends javax.swing.JFrame {
     }
 
     public Board() {
+
+        initComponents();
+
         this.opponentPieces = new ArrayList<>(16);
         this.myPieces = new ArrayList<>(16);
         this.allPieces = new ArrayList<>(32);
-
-        this.Side = "b";
-
-        initComponents();
+        this.timer = new Timer(OurClock, OpponentClock);
+        this.Side = "white";
 
         DrawSquares();
 
         DrawPieces();
-        stopWatch = new StopWatch();
-        stopWatch.start();
+
+        timer.StartTimer(60);
+
     }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        Container = new javax.swing.JPanel();
         jLayeredPane1 = new javax.swing.JLayeredPane();
-        jLabel1 = new javax.swing.JLabel();
+        InformationContainer = new javax.swing.JPanel();
+        OurClock = new javax.swing.JLabel();
+        OpponentClock = new javax.swing.JLabel();
+        OpponentUserName = new javax.swing.JLabel();
+        OurUserName = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setPreferredSize(new java.awt.Dimension(900, 600));
+        setResizable(false);
+
+        Container.setBackground(new java.awt.Color(189, 210, 182));
+        Container.setPreferredSize(new java.awt.Dimension(900, 600));
 
         jLayeredPane1.setPreferredSize(new java.awt.Dimension(500, 500));
         jLayeredPane1.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
@@ -185,36 +208,109 @@ public class Board extends javax.swing.JFrame {
         });
         jLayeredPane1.setLayout(new java.awt.GridLayout(8, 8));
 
-        jLabel1.setText("jLabel1");
-        jLabel1.setToolTipText("");
-        jLabel1.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+        InformationContainer.setBackground(new java.awt.Color(248, 237, 227));
+
+        OurClock.setBackground(new java.awt.Color(162, 178, 159));
+        OurClock.setFont(new java.awt.Font("Times New Roman", 1, 36)); // NOI18N
+        OurClock.setForeground(new java.awt.Color(121, 135, 119));
+        OurClock.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        OurClock.setText("jLabel1");
+        OurClock.setToolTipText("");
+        OurClock.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                jLabel1PropertyChange(evt);
+                OurClockPropertyChange(evt);
             }
         });
+
+        OpponentClock.setBackground(new java.awt.Color(162, 178, 159));
+        OpponentClock.setFont(new java.awt.Font("Times New Roman", 1, 36)); // NOI18N
+        OpponentClock.setForeground(new java.awt.Color(121, 135, 119));
+        OpponentClock.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        OpponentClock.setText("jLabel1");
+        OpponentClock.setToolTipText("");
+        OpponentClock.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                OpponentClockPropertyChange(evt);
+            }
+        });
+
+        OpponentUserName.setBackground(new java.awt.Color(162, 178, 159));
+        OpponentUserName.setFont(new java.awt.Font("Times New Roman", 1, 24)); // NOI18N
+        OpponentUserName.setForeground(new java.awt.Color(121, 135, 119));
+        OpponentUserName.setText("OpponentUserName");
+        OpponentUserName.setPreferredSize(new java.awt.Dimension(150, 30));
+
+        OurUserName.setBackground(new java.awt.Color(162, 178, 159));
+        OurUserName.setFont(new java.awt.Font("Times New Roman", 1, 24)); // NOI18N
+        OurUserName.setForeground(new java.awt.Color(121, 135, 119));
+        OurUserName.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        OurUserName.setText("OurUserName");
+        OurUserName.setPreferredSize(new java.awt.Dimension(150, 30));
+
+        javax.swing.GroupLayout InformationContainerLayout = new javax.swing.GroupLayout(InformationContainer);
+        InformationContainer.setLayout(InformationContainerLayout);
+        InformationContainerLayout.setHorizontalGroup(
+            InformationContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(InformationContainerLayout.createSequentialGroup()
+                .addGroup(InformationContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(OurUserName, javax.swing.GroupLayout.PREFERRED_SIZE, 261, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(OpponentUserName, javax.swing.GroupLayout.PREFERRED_SIZE, 261, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(InformationContainerLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(InformationContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(OpponentClock, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(OurClock, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        InformationContainerLayout.setVerticalGroup(
+            InformationContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, InformationContainerLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(OpponentClock, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(OpponentUserName, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 110, Short.MAX_VALUE)
+                .addComponent(OurUserName, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(OurClock, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+
+        OpponentClock.getAccessibleContext().setAccessibleName("OurClock");
+
+        javax.swing.GroupLayout ContainerLayout = new javax.swing.GroupLayout(Container);
+        Container.setLayout(ContainerLayout);
+        ContainerLayout.setHorizontalGroup(
+            ContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ContainerLayout.createSequentialGroup()
+                .addGap(42, 42, 42)
+                .addComponent(jLayeredPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 63, Short.MAX_VALUE)
+                .addComponent(InformationContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(35, 35, 35))
+        );
+        ContainerLayout.setVerticalGroup(
+            ContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(ContainerLayout.createSequentialGroup()
+                .addGap(50, 50, 50)
+                .addComponent(jLayeredPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(50, 50, 50))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ContainerLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(InformationContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(106, 106, 106))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(144, 144, 144)
-                        .addComponent(jLayeredPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(673, 673, 673)
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
+            .addComponent(Container, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(39, 39, 39)
-                .addComponent(jLayeredPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(197, Short.MAX_VALUE))
+            .addComponent(Container, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
@@ -252,9 +348,13 @@ public class Board extends javax.swing.JFrame {
         // k.getKing().setLocation(evt.getPoint());
     }//GEN-LAST:event_jLayeredPane1MouseDragged
 
-    private void jLabel1PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jLabel1PropertyChange
+    private void OpponentClockPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_OpponentClockPropertyChange
         // TODO add your handling code here:
-    }//GEN-LAST:event_jLabel1PropertyChange
+    }//GEN-LAST:event_OpponentClockPropertyChange
+
+    private void OurClockPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_OurClockPropertyChange
+        // TODO add your handling code here:
+    }//GEN-LAST:event_OurClockPropertyChange
 
     /**
      * @param args the command line arguments
@@ -302,7 +402,12 @@ public class Board extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JPanel Container;
+    private javax.swing.JPanel InformationContainer;
+    private javax.swing.JLabel OpponentClock;
+    private javax.swing.JLabel OpponentUserName;
+    private javax.swing.JLabel OurClock;
+    private javax.swing.JLabel OurUserName;
     private javax.swing.JLayeredPane jLayeredPane1;
     // End of variables declaration//GEN-END:variables
 }
