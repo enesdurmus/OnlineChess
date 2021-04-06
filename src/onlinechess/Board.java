@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import javax.swing.Timer;
+import javax.xml.bind.Marshaller;
 
 /**
  *
@@ -110,7 +112,7 @@ public class Board extends javax.swing.JFrame {
     }
 
     private void SelectPiece(JLabel pieceLabel) {
-        System.out.println(pieceLabel.getName());
+        //System.out.println(pieceLabel.getName());
         selectedPanel = pieceLabel.getParent();
         previousColor = selectedPanel.getBackground();
         selectedPanel.setBackground(new Color(118, 150, 86));
@@ -127,10 +129,19 @@ public class Board extends javax.swing.JFrame {
     }
 
     private void MovePiece(int square) {
+        System.out.println(selectedPiece.getName() + " is moving to " + square);
         selectedPiece.Move(square);
         selectedPanel.setBackground(previousColor);
         selectedPiece = null;
         isSelected = false;
+    }
+
+    private void AttackPiece(String name) {
+        if (selectedPiece.Attack(name)) {
+            opponentPieces.stream().filter((piece) -> (name.equals(piece.getName()))).forEachOrdered((piece) -> {
+                allPieces.remove(piece);
+            });
+        }
     }
 
     public Board() {
@@ -138,7 +149,7 @@ public class Board extends javax.swing.JFrame {
         this.myPieces = new ArrayList<>(16);
         this.allPieces = new ArrayList<>(32);
 
-        this.Side = "white";
+        this.Side = "b";
 
         initComponents();
 
@@ -176,6 +187,11 @@ public class Board extends javax.swing.JFrame {
 
         jLabel1.setText("jLabel1");
         jLabel1.setToolTipText("");
+        jLabel1.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                jLabel1PropertyChange(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -221,20 +237,24 @@ public class Board extends javax.swing.JFrame {
 
         } else if (isSelected && jLayeredPane1.findComponentAt(evt.getPoint()).getName().charAt(0) == opponentPieces.get(0).getName().charAt(0)) {
 
-            System.out.println("yeme metodu");
+            AttackPiece(jLayeredPane1.findComponentAt(evt.getPoint()).getName());
 
         } else {
 
             MovePiece(Integer.valueOf(jLayeredPane1.findComponentAt(evt.getPoint()).getName()));
 
         }
-        System.out.println(stopWatch.toString());
+
         SwingUtilities.updateComponentTreeUI(jLayeredPane1);
     }//GEN-LAST:event_jLayeredPane1MousePressed
 
     private void jLayeredPane1MouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLayeredPane1MouseDragged
         // k.getKing().setLocation(evt.getPoint());
     }//GEN-LAST:event_jLayeredPane1MouseDragged
+
+    private void jLabel1PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jLabel1PropertyChange
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jLabel1PropertyChange
 
     /**
      * @param args the command line arguments
@@ -276,6 +296,7 @@ public class Board extends javax.swing.JFrame {
             @Override
             public void run() {
                 new Board().setVisible(true);
+
             }
         });
     }

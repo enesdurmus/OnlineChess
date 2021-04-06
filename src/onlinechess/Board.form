@@ -73,6 +73,9 @@
         <Property name="text" type="java.lang.String" value="jLabel1"/>
         <Property name="toolTipText" type="java.lang.String" value=""/>
       </Properties>
+      <Events>
+        <EventHandler event="propertyChange" listener="java.beans.PropertyChangeListener" parameters="java.beans.PropertyChangeEvent" handler="jLabel1PropertyChange"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

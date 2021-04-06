@@ -44,11 +44,11 @@ public class Knight extends Piece {
         //For the top
         for (int i = 1; i <= 2; i++) {
             //for the left
-            if ((getSquare() - 8 * i - x) % 8 < column && getSquare() + 8 * i - x >= 0 && CheckAllPieces(allPieces, getSquare() - 8 * i - x, isEmpty)) {
+            if ((getSquare() - 8 * i - x) % 8 < column && getSquare() - 8 * i - x >= 0 && CheckAllPieces(allPieces, getSquare() - 8 * i - x, isEmpty)) {
                 squaresCanMove.add(getSquare() - 8 * i - x);
             }
             //for the right
-            if ((getSquare() - 8 * i + x) % 8 > column && getSquare() + 8 * i - x >= 0 && CheckAllPieces(allPieces, getSquare() - 8 * i + x, isEmpty)) {
+            if ((getSquare() - 8 * i + x) % 8 > column && getSquare() - 8 * i + x >= 0 && CheckAllPieces(allPieces, getSquare() - 8 * i + x, isEmpty)) {
                 squaresCanMove.add(getSquare() - 8 * i + x);
             }
             x--;
@@ -66,6 +66,5 @@ public class Knight extends Piece {
             }
             x--;
         }
-        System.out.println(squaresCanMove.size());
     }
 }

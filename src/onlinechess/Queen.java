@@ -150,6 +150,5 @@ public class Queen extends Piece {
             }
             squaresCanMove.add(column + 8 * i);
         }
-        System.out.println(squaresCanMove.size());
     }
 }

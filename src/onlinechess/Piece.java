@@ -42,18 +42,37 @@ public class Piece {
     }
 
     public void Move(int square) {
-
         if (MoveControl(square)) {
             setSquare(square);
             JPanel panel = (JPanel) getBoard().getComponent(square);
-            System.out.println(getBoard().getComponent(square).getName());
             panel.add(getLabelPiece());
         }
         ClearGreenDots();
         ClearGreenFrames();
     }
 
-    public boolean MoveControl(int s) {
+    public boolean Attack(String name) {
+        Piece p = null;
+        for (Piece a : attackablePieces) {
+            if (a.getName().equals(name)) {
+                p = a;
+                break;
+            }
+        }
+
+        if (p != null) {
+            p.labelPiece.getParent().remove(p.labelPiece);
+            setSquare(p.getSquare());
+            JPanel panel = (JPanel) getBoard().getComponent(square);
+            panel.add(getLabelPiece());
+            ClearGreenDots();
+            ClearGreenFrames();
+            return true;
+        }
+        return false;
+    }
+
+    private boolean MoveControl(int s) {
         return squaresCanMove.stream().anyMatch((i) -> (i == s));
     }
 

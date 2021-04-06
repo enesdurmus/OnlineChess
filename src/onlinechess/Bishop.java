@@ -101,8 +101,6 @@ public class Bishop extends Piece {
                 break;
             }
         }
-        System.out.println(squaresCanMove.size());
     }
-
 
 }

@@ -5,8 +5,6 @@
  */
 package onlinechess;
 
-import javax.swing.JLabel;
-
 /**
  *
  * @author X550V
