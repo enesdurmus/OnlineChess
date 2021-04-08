@@ -18,7 +18,7 @@ public class Queen extends Piece {
     public Queen(int square, JLayeredPane board, String name) {
         super(square, board, name);
 
-        if (name.equals("wQueen") || name.equals("wQueen")) {
+        if (name.startsWith("w")) {
             getLabelPiece().setIcon(new ImageIcon(getClass().getResource("/Images/WhiteQueen.png")));
         } else {
             getLabelPiece().setIcon(new ImageIcon(getClass().getResource("/Images/BlackQueen.png")));

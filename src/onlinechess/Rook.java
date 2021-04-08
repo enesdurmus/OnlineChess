@@ -18,7 +18,7 @@ public class Rook extends Piece {
     public Rook(int square, JLayeredPane board, String name) {
         super(square, board, name);
 
-        if (name.equals("wRook1") || name.equals("wRook2")) {
+        if (name.startsWith("w")) {
             getLabelPiece().setIcon(new ImageIcon(getClass().getResource("/Images/WhiteRook.png")));
         } else {
             getLabelPiece().setIcon(new ImageIcon(getClass().getResource("/Images/BlackRook.png")));

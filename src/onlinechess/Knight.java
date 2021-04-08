@@ -18,7 +18,7 @@ public class Knight extends Piece {
     public Knight(int square, JLayeredPane board, String name) {
         super(square, board, name);
 
-        if (name.equals("wKnight1") || name.equals("wKnight2")) {
+        if (name.startsWith("w")) {
             getLabelPiece().setIcon(new ImageIcon(getClass().getResource("/Images/WhiteKnight.png")));
         } else {
             getLabelPiece().setIcon(new ImageIcon(getClass().getResource("/Images/BlackKnight.png")));

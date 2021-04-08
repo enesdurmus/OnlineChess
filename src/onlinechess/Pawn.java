@@ -7,7 +7,9 @@ package onlinechess;
 
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JLayeredPane;
+import javax.swing.JPanel;
 
 /**
  *
@@ -16,16 +18,18 @@ import javax.swing.JLayeredPane;
 public class Pawn extends Piece {
 
     private boolean hasMoved = false;
+    private ArrayList<JButton> upgradeButtons;
 
-    public Pawn(int square, JLayeredPane board, String name) {
+    public Pawn(int square, JLayeredPane board, String name, ArrayList<JButton> upgradeButtons) {
         super(square, board, name);
 
-        if (name.equals("wPawn1") || name.equals("wPawn2") || name.equals("wPawn3") || name.equals("wPawn4")
-                || name.equals("wPawn5") || name.equals("wPawn6") || name.equals("wPawn7") || name.equals("wPawn8")) {
+        if (name.startsWith("w")) {
             getLabelPiece().setIcon(new ImageIcon(getClass().getResource("/Images/WhitePawn.png")));
         } else {
             getLabelPiece().setIcon(new ImageIcon(getClass().getResource("/Images/BlackPawn.png")));
         }
+
+        this.upgradeButtons = upgradeButtons;
     }
 
     @Override
@@ -49,6 +53,7 @@ public class Pawn extends Piece {
                     isEmpty = ChechAllPiecesHasMoved(allPieces, isEmpty, 7, 9);
                     break;
             }
+
         } else {
             switch (column) {
                 case 0:
@@ -84,6 +89,68 @@ public class Pawn extends Piece {
     public void Move(int square) {
         super.Move(square); //To change body of generated methods, choose Tools | Templates.
         hasMoved = true;
+        if (square / 8 == 0) {
+            OpenUpgradePanel();
+        }
+    }
+
+    @Override
+    public boolean Attack(String name) {
+        Piece p = null;
+        for (Piece a : attackablePieces) {
+            if (a.getName().equals(name)) {
+                p = a;
+                break;
+            }
+        }
+
+        if (p != null) {
+            p.getLabelPiece().getParent().remove(p.getLabelPiece());
+            setSquare(p.getSquare());
+            JPanel panel = (JPanel) getBoard().getComponent(p.getSquare());
+            panel.add(getLabelPiece());
+            ClearGreenDots();
+            ClearGreenFrames();
+            if (p.getSquare() / 8 == 0) {
+                OpenUpgradePanel();
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private void OpenUpgradePanel() {
+        upgradeButtons.forEach((upgradeButton) -> {
+            upgradeButton.setVisible(true);
+        });
+    }
+
+    private void CloseUpgradePanel() {
+        upgradeButtons.forEach((upgradeButton) -> {
+            upgradeButton.setVisible(false);
+        });
+
+    }
+
+    public Piece UpgradePawn(String name, int upgradeCounter) {
+        this.getLabelPiece().getParent().remove(this.getLabelPiece());
+        Piece upgradedPawn = null;
+        switch (name) {
+            case "knight":
+                upgradedPawn = new Knight(getSquare(), getBoard(), this.getName().charAt(0) + "newKnight" + upgradeCounter);
+                break;
+            case "bishop":
+                upgradedPawn = new Bishop(getSquare(), getBoard(), this.getName().charAt(0) + "newBishop" + upgradeCounter);
+                break;
+            case "rook":
+                upgradedPawn = new Rook(getSquare(), getBoard(), this.getName().charAt(0) + "newRook" + upgradeCounter);
+                break;
+            case "queen":
+                upgradedPawn = new Queen(getSquare(), getBoard(), this.getName().charAt(0) + "newQueen" + upgradeCounter);
+                break;
+        }
+        CloseUpgradePanel();
+        return upgradedPawn;
     }
 
     public boolean ChechAllPiecesHasMoved(ArrayList<Piece> allPieces, boolean isEmpty, int n) {

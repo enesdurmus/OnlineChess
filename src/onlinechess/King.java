@@ -18,7 +18,7 @@ public class King extends Piece {
     public King(int square, JLayeredPane board, String name) {
         super(square, board, name);
 
-        if (name.equals("wKing")) {
+        if (name.startsWith("w")) {
             getLabelPiece().setIcon(new ImageIcon(getClass().getResource("/Images/WhiteKing.png")));
         } else {
             getLabelPiece().setIcon(new ImageIcon(getClass().getResource("/Images/BlackKing.png")));

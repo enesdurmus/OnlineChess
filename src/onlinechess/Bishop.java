@@ -18,7 +18,7 @@ public class Bishop extends Piece {
     public Bishop(int square, JLayeredPane board, String name) {
         super(square, board, name);
 
-        if (name.equals("wBishop1") || name.equals("wBishop2")) {
+        if (name.startsWith("w")) {
             getLabelPiece().setIcon(new ImageIcon(getClass().getResource("/Images/WhiteBishop.png")));
         } else {
             getLabelPiece().setIcon(new ImageIcon(getClass().getResource("/Images/BlackBishop.png")));
