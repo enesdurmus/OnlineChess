@@ -9,10 +9,7 @@ import Message.Message;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -25,19 +22,26 @@ import javax.swing.SwingUtilities;
  */
 public class Board extends javax.swing.JFrame {
 
-    private final String Side;
+    public static Board Game;
+    public boolean isOurTurn = false;
+    private String Side;
     private boolean isSelected = false;
     private Container selectedPanel;
     private Color previousColor;
     private Piece selectedPiece;
-    private final ArrayList<Piece> myPieces;
-    private final ArrayList<Piece> opponentPieces;
-    private final ArrayList<Piece> allPieces;
-    private final ArrayList<JButton> upgradeButtons;
+    private ArrayList<Piece> myPieces;
+    private ArrayList<Piece> opponentPieces;
+    private ArrayList<Piece> allPieces;
+    private ArrayList<JButton> upgradeButtons;
     private boolean isUpgrading = false;
     private int upgradeCounter = 0;
-    private final Timer timer;
-    // private Timer opponentTimer;
+    private Timer timer;
+    private int countDownTime = 0;
+    private int increaseTime = 0;
+
+    public void OpponentJoinedTheRoom(String name) {
+        OpponentUserName.setText(name);
+    }
 
     private void DrawSquares() {
         for (int i = 0; i < 64; i++) {
@@ -74,7 +78,7 @@ public class Board extends javax.swing.JFrame {
             myPieces.add(new Queen(59, ChessBoardPanel, "wQueen"));
             myPieces.add(new King(60, ChessBoardPanel, "wKing"));
             myPieces.add(new Bishop(61, ChessBoardPanel, "wBishop2"));
-            myPieces.add(new Knight(35, ChessBoardPanel, "wKnight2"));
+            myPieces.add(new Knight(62, ChessBoardPanel, "wKnight2"));
             myPieces.add(new Rook(63, ChessBoardPanel, "wRook2"));
             for (int i = 1; i <= 8; i++) {
                 myPieces.add(new Pawn(i + 47, ChessBoardPanel, "wPawn".concat(String.valueOf(i)), upgradeButtons));
@@ -92,16 +96,16 @@ public class Board extends javax.swing.JFrame {
                 myPieces.add(new Pawn(i + 47, ChessBoardPanel, "bPawn".concat(String.valueOf(i)), upgradeButtons));
             }
 
-            opponentPieces.add(new Rook(0, ChessBoardPanel, "wRook1"));
-            opponentPieces.add(new Knight(1, ChessBoardPanel, "wKnight1"));
-            opponentPieces.add(new Bishop(2, ChessBoardPanel, "wBishop1"));
+            opponentPieces.add(new Rook(0, ChessBoardPanel, "wRook2"));
+            opponentPieces.add(new Knight(1, ChessBoardPanel, "wKnight2"));
+            opponentPieces.add(new Bishop(2, ChessBoardPanel, "wBishop2"));
             opponentPieces.add(new Queen(4, ChessBoardPanel, "wQueen"));
             opponentPieces.add(new King(3, ChessBoardPanel, "wKing"));
-            opponentPieces.add(new Bishop(5, ChessBoardPanel, "wBishop2"));
-            opponentPieces.add(new Knight(6, ChessBoardPanel, "wKnight2"));
-            opponentPieces.add(new Rook(7, ChessBoardPanel, "wRook2"));
-            for (int i = 1; i <= 8; i++) {
-                opponentPieces.add(new Pawn(i + 7, ChessBoardPanel, "wPawn".concat(String.valueOf(i)), upgradeButtons));
+            opponentPieces.add(new Bishop(5, ChessBoardPanel, "wBishop1"));
+            opponentPieces.add(new Knight(6, ChessBoardPanel, "wKnight1"));
+            opponentPieces.add(new Rook(7, ChessBoardPanel, "wRook1"));
+            for (int i = 8; i >= 1; i--) {
+                opponentPieces.add(new Pawn(i + 7, ChessBoardPanel, "wPawn".concat(String.valueOf(i - 7)), upgradeButtons));
             }
         }
 
@@ -143,6 +147,16 @@ public class Board extends javax.swing.JFrame {
         });
     }
 
+    private Piece FindOpponentPiece(String name) {
+        Piece p = null;
+        for (Piece opponentPiece : opponentPieces) {
+            if (opponentPiece.getName().equals(name)) {
+                p = opponentPiece;
+            }
+        }
+        return p;
+    }
+
     private void SelectPiece(JLabel pieceLabel) {
         //System.out.println(pieceLabel.getName());
         selectedPanel = pieceLabel.getParent();
@@ -160,9 +174,27 @@ public class Board extends javax.swing.JFrame {
         SelectPiece(pieceLabel);
     }
 
+    public void SendMoveInfToServer(String pieceName, int square) {
+        ArrayList inf = new ArrayList();
+        inf.add(pieceName);
+        inf.add(square);
+        Message msg = new Message(Message.Message_Type.MovePiece);
+        msg.content = inf;
+        Client.Send(msg);
+        isOurTurn = false;
+    }
+
+    public void ReadMoveInfFromServer(ArrayList inf) {
+        Piece p = FindOpponentPiece((String) inf.get(0));
+        p.MoveWithoutControl(63 - (int) inf.get(1));
+        SwingUtilities.updateComponentTreeUI(ChessBoardPanel);
+
+    }
+
     private void MovePiece(int square) {
         System.out.println(selectedPiece.getName() + " is moving to " + square);
         selectedPiece.Move(square);
+        SendMoveInfToServer(selectedPiece.getName(), square);
         selectedPanel.setBackground(previousColor);
 
         if (selectedPiece.getClass().getName().substring(12).equalsIgnoreCase("Pawn")) {
@@ -198,6 +230,49 @@ public class Board extends javax.swing.JFrame {
         }
     }
 
+    private void initComps(String side, String timeSettings, String userName, String opponentUserName) {
+        this.opponentPieces = new ArrayList<>(16);
+        this.myPieces = new ArrayList<>(16);
+        this.allPieces = new ArrayList<>(32);
+        this.upgradeButtons = new ArrayList<>(4);
+        this.timer = new Timer(OurClock, OpponentClock);
+        this.Side = side;
+
+        DrawSquares();
+
+        DrawPieces();
+
+        SetUpgradeButtons();
+
+        OurUserName.setText(userName);
+
+        countDownTime = Integer.valueOf(String.valueOf(timeSettings.charAt(0))) * 60;
+        increaseTime = Integer.valueOf(String.valueOf(timeSettings.charAt(4)));
+        OurClock.setText(String.valueOf(countDownTime));
+        OpponentClock.setText(String.valueOf(countDownTime));
+
+        Game = this;
+
+        if (Side.equals("white")) {
+            isOurTurn = true;
+        }
+        //   timer.StartTimer(60);}
+    }
+
+    public Board(String side, String timeSettings, String userName, String opponentUserName) {
+
+        initComponents();
+        initComps(side, timeSettings, userName, opponentUserName);
+        OpponentUserName.setText(opponentUserName);
+    }
+
+    public Board(String side, String timeSettings, String userName) {
+
+        initComponents();
+
+        initComps(side, timeSettings, userName, userName);
+    }
+
     public Board() {
 
         initComponents();
@@ -215,8 +290,7 @@ public class Board extends javax.swing.JFrame {
 
         SetUpgradeButtons();
 
-        timer.StartTimer(60);
-
+        //   timer.StartTimer(60);
     }
 
     @SuppressWarnings("unchecked")
@@ -261,7 +335,7 @@ public class Board extends javax.swing.JFrame {
         InformationPanel.setBackground(new java.awt.Color(248, 237, 227));
 
         OurClock.setBackground(new java.awt.Color(162, 178, 159));
-        OurClock.setFont(new java.awt.Font("Times New Roman", 1, 36)); // NOI18N
+        OurClock.setFont(new java.awt.Font("Times New Roman", 2, 36)); // NOI18N
         OurClock.setForeground(new java.awt.Color(121, 135, 119));
         OurClock.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         OurClock.setText("jLabel1");
@@ -273,7 +347,7 @@ public class Board extends javax.swing.JFrame {
         });
 
         OpponentClock.setBackground(new java.awt.Color(162, 178, 159));
-        OpponentClock.setFont(new java.awt.Font("Times New Roman", 1, 36)); // NOI18N
+        OpponentClock.setFont(new java.awt.Font("Times New Roman", 2, 36)); // NOI18N
         OpponentClock.setForeground(new java.awt.Color(121, 135, 119));
         OpponentClock.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         OpponentClock.setText("jLabel1");
@@ -285,14 +359,14 @@ public class Board extends javax.swing.JFrame {
         });
 
         OpponentUserName.setBackground(new java.awt.Color(162, 178, 159));
-        OpponentUserName.setFont(new java.awt.Font("Times New Roman", 1, 24)); // NOI18N
+        OpponentUserName.setFont(new java.awt.Font("Times New Roman", 1, 36)); // NOI18N
         OpponentUserName.setForeground(new java.awt.Color(121, 135, 119));
         OpponentUserName.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         OpponentUserName.setText("OpponentUserName");
         OpponentUserName.setPreferredSize(new java.awt.Dimension(150, 30));
 
         OurUserName.setBackground(new java.awt.Color(162, 178, 159));
-        OurUserName.setFont(new java.awt.Font("Times New Roman", 1, 24)); // NOI18N
+        OurUserName.setFont(new java.awt.Font("Times New Roman", 1, 36)); // NOI18N
         OurUserName.setForeground(new java.awt.Color(121, 135, 119));
         OurUserName.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         OurUserName.setText("OurUserName");
@@ -444,11 +518,11 @@ public class Board extends javax.swing.JFrame {
                     SelectAnotherPiece((JLabel) ChessBoardPanel.findComponentAt(evt.getPoint()));
                 }
 
-            } else if (isSelected && ChessBoardPanel.findComponentAt(evt.getPoint()).getName().charAt(0) == opponentPieces.get(0).getName().charAt(0)) {
+            } else if (isOurTurn && isSelected && ChessBoardPanel.findComponentAt(evt.getPoint()).getName().charAt(0) == opponentPieces.get(0).getName().charAt(0)) {
 
                 AttackPiece(ChessBoardPanel.findComponentAt(evt.getPoint()).getName());
 
-            } else {
+            } else if (isOurTurn) {
 
                 MovePiece(Integer.valueOf(ChessBoardPanel.findComponentAt(evt.getPoint()).getName()));
 

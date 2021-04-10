@@ -5,6 +5,10 @@
  */
 package onlinechess;
 
+import Message.Message;
+import java.util.ArrayList;
+import javax.swing.DefaultListModel;
+
 /**
  *
  * @author X550V
@@ -14,9 +18,15 @@ public class Main extends javax.swing.JFrame {
     /**
      * Creates new form Main
      */
+    public static Main Game;
+    public boolean isRoomOwner = false;
+
+    DefaultListModel lm1;
+
     public Main() {
         initComponents();
-
+        lm1 = new DefaultListModel();
+        Game = this;
     }
 
     /**
@@ -42,17 +52,14 @@ public class Main extends javax.swing.JFrame {
         createARoomButton = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         roomNameField = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
+        SideChooser = new javax.swing.JCheckBox();
         connectServerButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setText("UserName : ");
 
-        roomsList.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
         jScrollPane1.setViewportView(roomsList);
 
         JoinARoomButton.setText("Join A Room");
@@ -97,7 +104,7 @@ public class Main extends javax.swing.JFrame {
 
         jLabel2.setText("Time Settings");
 
-        timeSettingsComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        timeSettingsComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "3 + 0", "3 + 2", "5 + 0", "5 + 3" }));
 
         createARoomButton.setText("Create A Room");
         createARoomButton.addActionListener(new java.awt.event.ActionListener() {
@@ -108,26 +115,32 @@ public class Main extends javax.swing.JFrame {
 
         jLabel3.setText("Room Name");
 
+        jLabel4.setText("Choose A Side");
+
+        SideChooser.setText("White");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(createARoomButton, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(62, 62, 62))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 122, Short.MAX_VALUE)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 122, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(roomNameField)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(timeSettingsComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(roomNameField))
+                    .addComponent(SideChooser, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(58, 58, 58)
-                .addComponent(createARoomButton, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -141,8 +154,12 @@ public class Main extends javax.swing.JFrame {
                     .addComponent(timeSettingsComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
+                    .addComponent(SideChooser))
+                .addGap(18, 18, 18)
                 .addComponent(createARoomButton, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(71, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         jTabbedPane1.addTab("Create A Room", jPanel1);
@@ -187,16 +204,48 @@ public class Main extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    public void RefreshRooms() {
+        roomsList.setModel(lm1);
+    }
+
+    public void JoinRoom(ArrayList<String> informations) {
+        Board board = new Board(informations.get(1), informations.get(2), informations.get(0), informations.get(3));
+        board.setVisible(true);
+        this.setVisible(false);
+    }
+
     private void createARoomButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createARoomButtonActionPerformed
         // TODO add your handling code here:
+        Message msg = new Message(Message.Message_Type.CreateRoom);
+        ArrayList<String> informations = new ArrayList();
+        informations.add(roomNameField.getText());
+        informations.add((String) timeSettingsComboBox.getSelectedItem());
+        if (SideChooser.isSelected()) {
+            informations.add("white");
+        } else {
+            informations.add("black");
+        }
+        msg.content = informations;
+        Client.Send(msg);
+        Board board = new Board(informations.get(2), (String) timeSettingsComboBox.getSelectedItem(), userNameField.getText());
+        board.setVisible(true);
+        this.setVisible(false);
+        isRoomOwner = true;
+        System.out.println(userNameField.getText() + " is creating a room named " + roomNameField.getText() + "...");
     }//GEN-LAST:event_createARoomButtonActionPerformed
 
     private void RefreshRoomsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RefreshRoomsButtonActionPerformed
         // TODO add your handling code here:       
+        lm1.clear();
+        Message msg = new Message(Message.Message_Type.ReturnRoomsNames);
+        Client.Send(msg);
     }//GEN-LAST:event_RefreshRoomsButtonActionPerformed
 
     private void JoinARoomButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JoinARoomButtonActionPerformed
         // TODO add your handling code here:
+        Message msg = new Message(Message.Message_Type.JoinRoom);
+        msg.content = roomsList.getSelectedValue();
+        Client.Send(msg);
     }//GEN-LAST:event_JoinARoomButtonActionPerformed
 
     private void connectServerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_connectServerButtonActionPerformed
@@ -242,11 +291,13 @@ public class Main extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton JoinARoomButton;
     private javax.swing.JButton RefreshRoomsButton;
+    private javax.swing.JCheckBox SideChooser;
     private javax.swing.JButton connectServerButton;
     private javax.swing.JButton createARoomButton;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;

@@ -51,6 +51,12 @@ public class Piece {
         ClearGreenFrames();
     }
 
+    public void MoveWithoutControl(int square) {
+        setSquare(square);
+        JPanel panel = (JPanel) getBoard().getComponent(square);
+        panel.add(getLabelPiece());
+    }
+
     public boolean Attack(String name) {
         Piece p = null;
         for (Piece a : attackablePieces) {

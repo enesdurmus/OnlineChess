@@ -12,7 +12,7 @@ package Message;
 public class Message implements java.io.Serializable {
 
     public static enum Message_Type {
-        None, Name, Disconnect, RivalConnected, Text, Selected, Bitis, Start,
+        JoinServer, CreateRoom, ReturnRoomsNames, JoinRoom ,Disconnect, MovePiece, Text, Selected, Bitis, Start,
     }
 
     public Message_Type type;

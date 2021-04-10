@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -28,6 +29,8 @@ public class Client {
     //serverı dinleme thredi 
     public static ServerListener listenMe;
 
+    public static ArrayList<String> rooms;
+
     public static void Start(String ip, int port, String userName) {
         try {
             // Client Soket nesnesi
@@ -41,7 +44,7 @@ public class Client {
             Client.listenMe.start();
 
             //ilk mesaj olarak isim gönderiyorum
-            Message msg = new Message(Message.Message_Type.Name);
+            Message msg = new Message(Message.Message_Type.JoinServer);
             msg.content = userName;
             Client.Send(msg);
         } catch (IOException ex) {
@@ -57,7 +60,6 @@ public class Client {
                 Client.socket.close();
                 Client.sOutput.flush();
                 Client.sOutput.close();
-
                 Client.sInput.close();
             }
         } catch (IOException ex) {
@@ -79,6 +81,5 @@ public class Client {
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
-
     }
 }
