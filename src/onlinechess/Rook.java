@@ -27,8 +27,8 @@ public class Rook extends Piece {
 
     @Override
     public void SetSquaresCanMove(ArrayList<Piece> allPieces) {
-        squaresCanMove.clear();
-        attackablePieces.clear();
+        this.getSquaresCanMove().clear();
+        this.getAttackablePieces().clear();
         boolean isEmpty = true;
 
         int row = getSquare() / 8, column = getSquare() % 8; // We get our row and colums so we can ignore squares that we cant go.
@@ -42,7 +42,7 @@ public class Rook extends Piece {
                 isEmpty = true;
                 break;
             }
-            squaresCanMove.add(row * 8 + i);
+            this.getSquaresCanMove().add(row * 8 + i);
         }
 
         // To the left
@@ -54,7 +54,7 @@ public class Rook extends Piece {
                 isEmpty = true;
                 break;
             }
-            squaresCanMove.add(row * 8 + i);
+            this.getSquaresCanMove().add(row * 8 + i);
         }
 
         //To The Bottom
@@ -66,7 +66,7 @@ public class Rook extends Piece {
                 isEmpty = true;
                 break;
             }
-            squaresCanMove.add(column + 8 * i);
+            this.getSquaresCanMove().add(column + 8 * i);
         }
 
         //To The Top
@@ -77,7 +77,7 @@ public class Rook extends Piece {
             if (!isEmpty) {
                 break;
             }
-            squaresCanMove.add(column + 8 * i);
+            this.getSquaresCanMove().add(column + 8 * i);
         }
     }
 }

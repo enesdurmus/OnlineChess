@@ -29,6 +29,7 @@ public class Board extends javax.swing.JFrame {
     private Container selectedPanel;
     private Color previousColor;
     private Piece selectedPiece;
+    private Piece tempPiece;
     private ArrayList<Piece> myPieces;
     private ArrayList<Piece> opponentPieces;
     private ArrayList<Piece> allPieces;
@@ -61,15 +62,15 @@ public class Board extends javax.swing.JFrame {
 
         if (Side.equals("white")) {
             opponentPieces.add(new Rook(0, ChessBoardPanel, "bRook1"));
-            opponentPieces.add(new Knight(1, ChessBoardPanel, "bKnight1"));
+            opponentPieces.add(new Knight(1, ChessBoardPanel, "bKnight2"));
             opponentPieces.add(new Bishop(2, ChessBoardPanel, "bBishop1"));
             opponentPieces.add(new Queen(3, ChessBoardPanel, "bQueen"));
             opponentPieces.add(new King(4, ChessBoardPanel, "bKing"));
             opponentPieces.add(new Bishop(5, ChessBoardPanel, "bBishop2"));
-            opponentPieces.add(new Knight(6, ChessBoardPanel, "bKnight2"));
+            opponentPieces.add(new Knight(6, ChessBoardPanel, "bKnight1"));
             opponentPieces.add(new Rook(7, ChessBoardPanel, "bRook2"));
             for (int i = 1; i <= 8; i++) {
-                opponentPieces.add(new Pawn(i + 7, ChessBoardPanel, "bPawn".concat(String.valueOf(i)), upgradeButtons));
+                opponentPieces.add(new Pawn(16 - i, ChessBoardPanel, "bPawn".concat(String.valueOf(i)), upgradeButtons));
             }
 
             myPieces.add(new Rook(56, ChessBoardPanel, "wRook1"));
@@ -104,8 +105,8 @@ public class Board extends javax.swing.JFrame {
             opponentPieces.add(new Bishop(5, ChessBoardPanel, "wBishop1"));
             opponentPieces.add(new Knight(6, ChessBoardPanel, "wKnight1"));
             opponentPieces.add(new Rook(7, ChessBoardPanel, "wRook1"));
-            for (int i = 8; i >= 1; i--) {
-                opponentPieces.add(new Pawn(i + 7, ChessBoardPanel, "wPawn".concat(String.valueOf(i - 7)), upgradeButtons));
+            for (int i = 1; i <= 8; i++) {
+                opponentPieces.add(new Pawn(16 - i, ChessBoardPanel, "wPawn".concat(String.valueOf(i)), upgradeButtons));
             }
         }
 
@@ -147,6 +148,13 @@ public class Board extends javax.swing.JFrame {
         });
     }
 
+    private Piece FindPieceS(String name) {
+        myPieces.stream().filter((piece) -> (name.equals(piece.getName()))).forEachOrdered((piece) -> {
+            tempPiece = piece;
+        });
+        return tempPiece;
+    }
+
     private Piece FindOpponentPiece(String name) {
         Piece p = null;
         for (Piece opponentPiece : opponentPieces) {
@@ -174,10 +182,11 @@ public class Board extends javax.swing.JFrame {
         SelectPiece(pieceLabel);
     }
 
-    public void SendMoveInfToServer(String pieceName, int square) {
+    public void SendMoveInfToServer(String pieceName, int square, ArrayList<Integer> squaresCanMove) {
         ArrayList inf = new ArrayList();
         inf.add(pieceName);
         inf.add(square);
+        inf.add(squaresCanMove);
         Message msg = new Message(Message.Message_Type.MovePiece);
         msg.content = inf;
         Client.Send(msg);
@@ -186,15 +195,51 @@ public class Board extends javax.swing.JFrame {
 
     public void ReadMoveInfFromServer(ArrayList inf) {
         Piece p = FindOpponentPiece((String) inf.get(0));
-        p.MoveWithoutControl(63 - (int) inf.get(1));
-        SwingUtilities.updateComponentTreeUI(ChessBoardPanel);
+        ArrayList<Integer> s = (ArrayList<Integer>) inf.get(2);
+        for (int i = 0; i < s.size(); i++) {
+            s.set(i, 63 - s.get(i));
+        }
+        p.setSquaresCanMove(s);
+        p.Move(63 - (int) inf.get(1));
+        SwingUtilities.invokeLater(() -> {
+            SwingUtilities.updateComponentTreeUI(Container);
+        });
+    }
 
+    public void SendAttackInfToServer(String ourPiece, String opponentPiece, ArrayList<Piece> attackablePieces) {
+        ArrayList inf = new ArrayList();
+        inf.add(ourPiece);
+        inf.add(opponentPiece);
+        ArrayList<String> names = new ArrayList<>();
+        attackablePieces.forEach((attackablePiece) -> {
+            names.add(attackablePiece.getName());
+        });
+        inf.add(names);
+        Message msg = new Message(Message.Message_Type.Attack);
+        msg.content = inf;
+        Client.Send(msg);
+        isOurTurn = false;
+    }
+
+    public void ReadAttackInfFromServer(ArrayList inf) {
+        Piece p = FindOpponentPiece((String) inf.get(0));
+        ArrayList<String> s = (ArrayList<String>) inf.get(2);
+        ArrayList<Piece> attackablePieces = new ArrayList<>();
+        s.forEach((string) -> {
+            attackablePieces.add(FindPieceS(string));
+            System.out.println("aloo " + FindPieceS(string).getName());
+        });
+        p.setAttackablePieces(attackablePieces);
+        p.Attack((String) inf.get(1));
+        SwingUtilities.invokeLater(() -> {
+            SwingUtilities.updateComponentTreeUI(Container);
+        });
     }
 
     private void MovePiece(int square) {
         System.out.println(selectedPiece.getName() + " is moving to " + square);
         selectedPiece.Move(square);
-        SendMoveInfToServer(selectedPiece.getName(), square);
+        SendMoveInfToServer(selectedPiece.getName(), square, selectedPiece.getSquaresCanMove());
         selectedPanel.setBackground(previousColor);
 
         if (selectedPiece.getClass().getName().substring(12).equalsIgnoreCase("Pawn")) {
@@ -214,10 +259,13 @@ public class Board extends javax.swing.JFrame {
     }
 
     private void AttackPiece(String name) {
+        System.out.println(selectedPiece.getName() + " is attacking to " + name);
         if (selectedPiece.Attack(name)) {
             opponentPieces.stream().filter((piece) -> (name.equals(piece.getName()))).forEachOrdered((piece) -> {
                 allPieces.remove(piece);
                 selectedPanel.setBackground(previousColor);
+                SendAttackInfToServer(selectedPiece.getName(), name, selectedPiece.getAttackablePieces());
+
                 if (selectedPiece.getClass().getName().substring(12).equalsIgnoreCase("Pawn")) {
                     if (selectedPiece.getSquare() / 8 == 0) {
                         isUpgrading = true;
@@ -313,7 +361,7 @@ public class Board extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
 
-        Container.setBackground(new java.awt.Color(189, 210, 182));
+        Container.setBackground(new java.awt.Color(129, 0, 0));
         Container.setPreferredSize(new java.awt.Dimension(900, 600));
 
         ChessBoardPanel.setPreferredSize(new java.awt.Dimension(500, 500));
@@ -404,7 +452,7 @@ public class Board extends javax.swing.JFrame {
 
         OpponentClock.getAccessibleContext().setAccessibleName("OurClock");
 
-        PawnUpgradePanel.setBackground(new java.awt.Color(189, 210, 182));
+        PawnUpgradePanel.setBackground(new java.awt.Color(127, 0, 0));
         PawnUpgradePanel.setPreferredSize(new java.awt.Dimension(360, 60));
 
         knightUpgradeButton.addActionListener(new java.awt.event.ActionListener() {
@@ -528,7 +576,9 @@ public class Board extends javax.swing.JFrame {
 
             }
         }
-        SwingUtilities.updateComponentTreeUI(ChessBoardPanel);
+        SwingUtilities.invokeLater(() -> {
+            SwingUtilities.updateComponentTreeUI(Container);
+        });
     }//GEN-LAST:event_ChessBoardPanelMousePressed
 
     private void ChessBoardPanelMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ChessBoardPanelMouseDragged

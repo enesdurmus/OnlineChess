@@ -34,8 +34,8 @@ public class Pawn extends Piece {
 
     @Override
     public void SetSquaresCanMove(ArrayList<Piece> allPieces) {
-        squaresCanMove.clear();
-        attackablePieces.clear();
+        this.getSquaresCanMove().clear();
+        this.getAttackablePieces().clear();
         boolean isEmpty = true;
         boolean isSecondSquareEmpty = true;
 
@@ -75,12 +75,12 @@ public class Pawn extends Piece {
 
         if (isEmpty) {
             if (!hasMoved) {
-                squaresCanMove.add(getSquare() - 8);
+                this.getSquaresCanMove().add(getSquare() - 8);
                 if (isSecondSquareEmpty) {
-                    squaresCanMove.add(getSquare() - 16);
+                    this.getSquaresCanMove().add(getSquare() - 16);
                 }
             } else {
-                squaresCanMove.add(getSquare() - 8);
+                this.getSquaresCanMove().add(getSquare() - 8);
             }
         }
     }
@@ -97,7 +97,7 @@ public class Pawn extends Piece {
     @Override
     public boolean Attack(String name) {
         Piece p = null;
-        for (Piece a : attackablePieces) {
+        for (Piece a : this.getAttackablePieces()) {
             if (a.getName().equals(name)) {
                 p = a;
                 break;
@@ -157,7 +157,7 @@ public class Pawn extends Piece {
         for (Piece p : allPieces) {   // We check square if there is any piece.
             if (p.getSquare() == getSquare() - n) {
                 if (p.getName().charAt(0) != getName().charAt(0)) {
-                    attackablePieces.add(p);
+                    this.getAttackablePieces().add(p);
                 }
             } else if (p.getSquare() == getSquare() - 8) {
                 isEmpty = false;
@@ -170,7 +170,7 @@ public class Pawn extends Piece {
         for (Piece p : allPieces) {   // We check square if there is any piece.
             if (p.getSquare() == getSquare() - n || p.getSquare() == getSquare() - n2) {
                 if (p.getName().charAt(0) != getName().charAt(0)) {
-                    attackablePieces.add(p);
+                    this.getAttackablePieces().add(p);
                 }
             } else if (p.getSquare() == getSquare() - 8) {
                 isEmpty = false;
@@ -185,7 +185,7 @@ public class Pawn extends Piece {
         for (Piece p : allPieces) {   // We check square if there is any piece.
             if (p.getSquare() == getSquare() - n) {
                 if (p.getName().charAt(0) != getName().charAt(0)) {
-                    attackablePieces.add(p);
+                    this.getAttackablePieces().add(p);
                 }
             } else if (p.getSquare() == getSquare() - 8) {
                 isEmpty = false;
@@ -205,7 +205,7 @@ public class Pawn extends Piece {
         for (Piece p : allPieces) {   // We check square if there is any piece.
             if (p.getSquare() == getSquare() - n || p.getSquare() == getSquare() - n2) {
                 if (p.getName().charAt(0) != getName().charAt(0)) {
-                    attackablePieces.add(p);
+                    this.getAttackablePieces().add(p);
                 }
             } else if (p.getSquare() == getSquare() - 8) {
                 isEmpty = false;

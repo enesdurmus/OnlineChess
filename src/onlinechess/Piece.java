@@ -21,8 +21,8 @@ public class Piece {
     private int square;
     private JLayeredPane board;
     private String name;
-    public ArrayList<Integer> squaresCanMove;
-    public ArrayList<Piece> attackablePieces;
+    private ArrayList<Integer> squaresCanMove;
+    private ArrayList<Piece> attackablePieces;
     private ArrayList<JLabel> greenDots;
     private ArrayList<JLabel> greenFrames;
 
@@ -49,12 +49,6 @@ public class Piece {
         }
         ClearGreenDots();
         ClearGreenFrames();
-    }
-
-    public void MoveWithoutControl(int square) {
-        setSquare(square);
-        JPanel panel = (JPanel) getBoard().getComponent(square);
-        panel.add(getLabelPiece());
     }
 
     public boolean Attack(String name) {
@@ -167,6 +161,26 @@ public class Piece {
 
     public void setLabelPiece(JLabel labelPiece) {
         this.labelPiece = labelPiece;
+    }
+
+    public void setAttackablePieces(ArrayList<Piece> attackablePieces) {
+        this.attackablePieces = attackablePieces;
+    }
+
+    public void setSquaresCanMove(ArrayList<Integer> squaresCanMove) {
+        this.squaresCanMove.clear();
+        this.squaresCanMove = squaresCanMove;
+        this.squaresCanMove.forEach((integer) -> {
+            System.out.println("son hali" + integer);
+        });
+    }
+
+    public ArrayList<Piece> getAttackablePieces() {
+        return attackablePieces;
+    }
+
+    public ArrayList<Integer> getSquaresCanMove() {
+        return squaresCanMove;
     }
 
 }

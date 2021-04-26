@@ -17,7 +17,7 @@ import static onlinechess.Client.sInput;
  * @author X550V
  */
 public class ServerListener extends Thread {
-    
+
     @Override
     public void run() {
         //soket bağlı olduğu sürece dön
@@ -27,7 +27,7 @@ public class ServerListener extends Thread {
                 Message received = (Message) (sInput.readObject());
                 // print out the text of every message
                 switch (received.type) {
-                    
+
                     case ReturnRoomsNames:
                         Client.rooms = (ArrayList<String>) received.content;
                         Client.rooms.forEach((r) -> {
@@ -35,7 +35,7 @@ public class ServerListener extends Thread {
                         });
                         Main.Game.RefreshRooms();
                         System.out.println("Reached rooms list from server...");
-                        
+
                         break;
                     case JoinRoom:
                         if (Main.Game.isRoomOwner) {
@@ -50,13 +50,18 @@ public class ServerListener extends Thread {
                         ArrayList readMoveInf = (ArrayList) received.content;
                         Board.Game.ReadMoveInfFromServer(readMoveInf);
                         Board.Game.isOurTurn = true;
-                        System.out.println("Opponent has made a move " + readMoveInf.get(0) + " is moving to " + readMoveInf.get(1));
+                        System.out.println("Opponent has made a move " + readMoveInf.get(0) + " is moving to " + (63 - (int)readMoveInf.get(1)));
                         break;
-                    
+                    case Attack:
+                        ArrayList readAttackInf = (ArrayList) received.content;
+                        Board.Game.ReadAttackInfFromServer(readAttackInf);
+                        Board.Game.isOurTurn = true;
+                        System.out.println("Opponent piece " + readAttackInf.get(0) + " is attacking to " + readAttackInf.get(1));
+                        break;
                 }
-                
+
             } catch (IOException | ClassNotFoundException ex) {
-                
+
                 Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
                 //Client.Stop();
                 break;
@@ -64,6 +69,6 @@ public class ServerListener extends Thread {
             //Client.Stop();
 
         }
-        
+
     }
 }

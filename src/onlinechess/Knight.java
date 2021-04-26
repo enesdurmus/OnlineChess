@@ -35,8 +35,8 @@ public class Knight extends Piece {
      */
     @Override
     public void SetSquaresCanMove(ArrayList<Piece> allPieces) {
-        squaresCanMove.clear();
-        attackablePieces.clear();
+        this.getSquaresCanMove().clear();
+        this.getAttackablePieces().clear();
         boolean isEmpty = true;
 
         int row = getSquare() / 8, column = getSquare() % 8; // We get our row and colums so we can ignore squares that we cant go.
@@ -45,11 +45,11 @@ public class Knight extends Piece {
         for (int i = 1; i <= 2; i++) {
             //for the left
             if ((getSquare() - 8 * i - x) % 8 < column && getSquare() - 8 * i - x >= 0 && CheckAllPieces(allPieces, getSquare() - 8 * i - x, isEmpty)) {
-                squaresCanMove.add(getSquare() - 8 * i - x);
+                this.getSquaresCanMove().add(getSquare() - 8 * i - x);
             }
             //for the right
             if ((getSquare() - 8 * i + x) % 8 > column && getSquare() - 8 * i + x >= 0 && CheckAllPieces(allPieces, getSquare() - 8 * i + x, isEmpty)) {
-                squaresCanMove.add(getSquare() - 8 * i + x);
+                this.getSquaresCanMove().add(getSquare() - 8 * i + x);
             }
             x--;
         }
@@ -58,11 +58,11 @@ public class Knight extends Piece {
         for (int i = 1; i <= 2; i++) {
             //for the left
             if ((getSquare() + 8 * i - x) % 8 < column && getSquare() + 8 * i - x <= 63 && CheckAllPieces(allPieces, getSquare() + 8 * i - x, isEmpty)) {
-                squaresCanMove.add(getSquare() + 8 * i - x);
+                this.getSquaresCanMove().add(getSquare() + 8 * i - x);
             }
             //for the right
             if ((getSquare() + 8 * i + x) % 8 > column && getSquare() + 8 * i + x <= 63 && CheckAllPieces(allPieces, getSquare() + 8 * i + x, isEmpty)) {
-                squaresCanMove.add(getSquare() + 8 * i + x);
+                this.getSquaresCanMove().add(getSquare() + 8 * i + x);
             }
             x--;
         }

@@ -34,8 +34,8 @@ public class King extends Piece {
      */
     @Override
     public void SetSquaresCanMove(ArrayList<Piece> allPieces) {
-        squaresCanMove.clear();
-        attackablePieces.clear();
+        this.getSquaresCanMove().clear();
+        this.getAttackablePieces().clear();
         boolean isEmpty = true;
         int a = getSquare() - 9; // start from the left top corner of our king.
         int row = getSquare() / 8, column = getSquare() % 8; // We get our row and colums so we can ignore squares that we cant go.
@@ -50,7 +50,7 @@ public class King extends Piece {
                     isEmpty = CheckAllPieces(allPieces, a, isEmpty);
 
                     if (isEmpty) {   // if its empty we can move there
-                        squaresCanMove.add(a);
+                        this.getSquaresCanMove().add(a);
                     }
                 }
                 a++;

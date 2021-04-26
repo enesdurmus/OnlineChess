@@ -27,8 +27,8 @@ public class Bishop extends Piece {
 
     @Override
     public void SetSquaresCanMove(ArrayList<Piece> allPieces) {
-        squaresCanMove.clear();
-        attackablePieces.clear();
+        this.getSquaresCanMove().clear();
+        this.getAttackablePieces().clear();
         boolean isEmpty = true;
 
         int row = getSquare() / 8, column = getSquare() % 8; // We get our row and colums so we can ignore squares that we cant go.
@@ -45,7 +45,7 @@ public class Bishop extends Piece {
                     break;
                 }
 
-                squaresCanMove.add(getSquare() - 8 * i + i);
+                this.getSquaresCanMove().add(getSquare() - 8 * i + i);
             } else {
                 break;
             }
@@ -63,7 +63,7 @@ public class Bishop extends Piece {
                     break;
                 }
 
-                squaresCanMove.add(getSquare() - 8 * i - i);
+                this.getSquaresCanMove().add(getSquare() - 8 * i - i);
             } else {
                 break;
             }
@@ -81,7 +81,7 @@ public class Bishop extends Piece {
                     break;
                 }
 
-                squaresCanMove.add(getSquare() + 8 * i - i);
+                this.getSquaresCanMove().add(getSquare() + 8 * i - i);
             } else {
                 break;
             }
@@ -96,7 +96,7 @@ public class Bishop extends Piece {
                     break;
                 }
 
-                squaresCanMove.add(getSquare() + 8 * i + i);
+                this.getSquaresCanMove().add(getSquare() + 8 * i + i);
             } else {
                 break;
             }
