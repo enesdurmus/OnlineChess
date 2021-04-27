@@ -182,11 +182,10 @@ public class Board extends javax.swing.JFrame {
         SelectPiece(pieceLabel);
     }
 
-    public void SendMoveInfToServer(String pieceName, int square, ArrayList<Integer> squaresCanMove) {
+    public void SendMoveInfToServer(String pieceName, int square) {
         ArrayList inf = new ArrayList();
         inf.add(pieceName);
         inf.add(square);
-        inf.add(squaresCanMove);
         Message msg = new Message(Message.Message_Type.MovePiece);
         msg.content = inf;
         Client.Send(msg);
@@ -195,26 +194,16 @@ public class Board extends javax.swing.JFrame {
 
     public void ReadMoveInfFromServer(ArrayList inf) {
         Piece p = FindOpponentPiece((String) inf.get(0));
-        ArrayList<Integer> s = (ArrayList<Integer>) inf.get(2);
-        for (int i = 0; i < s.size(); i++) {
-            s.set(i, 63 - s.get(i));
-        }
-        p.setSquaresCanMove(s);
-        p.Move(63 - (int) inf.get(1));
+        p.MoveOpponent(63 - (int) inf.get(1));
         SwingUtilities.invokeLater(() -> {
             SwingUtilities.updateComponentTreeUI(Container);
         });
     }
 
-    public void SendAttackInfToServer(String ourPiece, String opponentPiece, ArrayList<Piece> attackablePieces) {
+    public void SendAttackInfToServer(String ourPiece, String opponentPiece) {
         ArrayList inf = new ArrayList();
         inf.add(ourPiece);
         inf.add(opponentPiece);
-        ArrayList<String> names = new ArrayList<>();
-        attackablePieces.forEach((attackablePiece) -> {
-            names.add(attackablePiece.getName());
-        });
-        inf.add(names);
         Message msg = new Message(Message.Message_Type.Attack);
         msg.content = inf;
         Client.Send(msg);
@@ -223,14 +212,7 @@ public class Board extends javax.swing.JFrame {
 
     public void ReadAttackInfFromServer(ArrayList inf) {
         Piece p = FindOpponentPiece((String) inf.get(0));
-        ArrayList<String> s = (ArrayList<String>) inf.get(2);
-        ArrayList<Piece> attackablePieces = new ArrayList<>();
-        s.forEach((string) -> {
-            attackablePieces.add(FindPieceS(string));
-            System.out.println("aloo " + FindPieceS(string).getName());
-        });
-        p.setAttackablePieces(attackablePieces);
-        p.Attack((String) inf.get(1));
+        p.AttackForOpponent((String) inf.get(1), allPieces);
         SwingUtilities.invokeLater(() -> {
             SwingUtilities.updateComponentTreeUI(Container);
         });
@@ -238,8 +220,9 @@ public class Board extends javax.swing.JFrame {
 
     private void MovePiece(int square) {
         System.out.println(selectedPiece.getName() + " is moving to " + square);
-        selectedPiece.Move(square);
-        SendMoveInfToServer(selectedPiece.getName(), square, selectedPiece.getSquaresCanMove());
+        if (selectedPiece.Move(square)) {
+            SendMoveInfToServer(selectedPiece.getName(), square);
+        }
         selectedPanel.setBackground(previousColor);
 
         if (selectedPiece.getClass().getName().substring(12).equalsIgnoreCase("Pawn")) {
@@ -264,7 +247,7 @@ public class Board extends javax.swing.JFrame {
             opponentPieces.stream().filter((piece) -> (name.equals(piece.getName()))).forEachOrdered((piece) -> {
                 allPieces.remove(piece);
                 selectedPanel.setBackground(previousColor);
-                SendAttackInfToServer(selectedPiece.getName(), name, selectedPiece.getAttackablePieces());
+                SendAttackInfToServer(selectedPiece.getName(), name);
 
                 if (selectedPiece.getClass().getName().substring(12).equalsIgnoreCase("Pawn")) {
                     if (selectedPiece.getSquare() / 8 == 0) {

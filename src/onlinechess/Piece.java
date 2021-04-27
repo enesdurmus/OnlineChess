@@ -41,14 +41,25 @@ public class Piece {
         panel.add(labelPiece);
     }
 
-    public void Move(int square) {
+    public boolean Move(int square) {
         if (MoveControl(square)) {
             setSquare(square);
             JPanel panel = (JPanel) getBoard().getComponent(square);
             panel.add(getLabelPiece());
+            ClearGreenDots();
+            ClearGreenFrames();
+            return true;
         }
         ClearGreenDots();
         ClearGreenFrames();
+        return false;
+
+    }
+
+    public void MoveOpponent(int square) {
+        setSquare(square);
+        JPanel panel = (JPanel) getBoard().getComponent(square);
+        panel.add(getLabelPiece());
     }
 
     public boolean Attack(String name) {
@@ -70,6 +81,24 @@ public class Piece {
             return true;
         }
         return false;
+    }
+
+    public void AttackForOpponent(String name, ArrayList<Piece> allPieces) {
+        Piece p = null;
+        for (Piece a : allPieces) {
+            if (a.getName().equals(name)) {
+                p = a;
+                break;
+            }
+        }
+        if (p != null) {
+            p.labelPiece.getParent().remove(p.labelPiece);
+            setSquare(p.getSquare());
+            JPanel panel = (JPanel) getBoard().getComponent(square);
+            panel.add(getLabelPiece());
+            ClearGreenDots();
+            ClearGreenFrames();
+        }
     }
 
     private boolean MoveControl(int s) {

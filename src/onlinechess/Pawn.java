@@ -86,12 +86,13 @@ public class Pawn extends Piece {
     }
 
     @Override
-    public void Move(int square) {
+    public boolean Move(int square) {
         super.Move(square); //To change body of generated methods, choose Tools | Templates.
         hasMoved = true;
         if (square / 8 == 0) {
             OpenUpgradePanel();
         }
+        return true;
     }
 
     @Override
