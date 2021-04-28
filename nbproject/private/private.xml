@@ -5,9 +5,8 @@
         <group>
             <file>file:/C:/Users/X550V/Desktop/MyProjects/OnlineChess/src/Message/Message.java</file>
             <file>file:/C:/Users/X550V/Desktop/MyProjects/OnlineChess/src/onlinechess/Main.java</file>
-            <file>file:/C:/Users/X550V/Desktop/MyProjects/OnlineChess/src/onlinechess/Piece.java</file>
             <file>file:/C:/Users/X550V/Desktop/MyProjects/OnlineChess/src/onlinechess/Board.java</file>
-            <file>file:/C:/Users/X550V/Desktop/MyProjects/OnlineChess/src/onlinechess/Pawn.java</file>
+            <file>file:/C:/Users/X550V/Desktop/MyProjects/OnlineChess/src/onlinechess/Timer.java</file>
             <file>file:/C:/Users/X550V/Desktop/MyProjects/OnlineChess/src/onlinechess/ServerListener.java</file>
             <file>file:/C:/Users/X550V/Desktop/MyProjects/OnlineChess/src/onlinechess/Client.java</file>
         </group>

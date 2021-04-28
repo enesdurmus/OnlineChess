@@ -45,17 +45,20 @@ public class ServerListener extends Thread {
                             Main.Game.JoinRoom((ArrayList<String>) received.content);
                             System.out.println("You have joined the room");
                         }
+                        Board.Game.StartTimer();
                         break;
                     case MovePiece:
                         ArrayList readMoveInf = (ArrayList) received.content;
                         Board.Game.ReadMoveInfFromServer(readMoveInf);
                         Board.Game.isOurTurn = true;
-                        System.out.println("Opponent has made a move " + readMoveInf.get(0) + " is moving to " + (63 - (int)readMoveInf.get(1)));
+                        Board.Game.ToggleTimer();
+                        System.out.println("Opponent has made a move " + readMoveInf.get(0) + " is moving to " + (63 - (int) readMoveInf.get(1)));
                         break;
                     case Attack:
                         ArrayList readAttackInf = (ArrayList) received.content;
                         Board.Game.ReadAttackInfFromServer(readAttackInf);
                         Board.Game.isOurTurn = true;
+                        Board.Game.ToggleTimer();
                         System.out.println("Opponent piece " + readAttackInf.get(0) + " is attacking to " + readAttackInf.get(1));
                         break;
                 }

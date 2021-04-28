@@ -24,7 +24,7 @@ public class Board extends javax.swing.JFrame {
 
     public static Board Game;
     public boolean isOurTurn = false;
-    private String Side;
+    public String Side;
     private boolean isSelected = false;
     private Container selectedPanel;
     private Color previousColor;
@@ -44,6 +44,23 @@ public class Board extends javax.swing.JFrame {
         OpponentUserName.setText(name);
     }
 
+    public void StartTimer() {
+        if (Side.equals("white")) {
+            timer.StartTimer(countDownTime);
+        } else {
+            timer.StartTimer(countDownTime);
+            timer.PauseTimer();
+        }
+    }
+
+    public void ToggleTimer() {
+        if (timer.GetIsRunning()) {
+            timer.PauseTimer(increaseTime);
+        } else {
+            timer.ResumeTimer();
+        }
+    }
+
     private void DrawSquares() {
         for (int i = 0; i < 64; i++) {
             JPanel square = new JPanel(new BorderLayout());
@@ -61,14 +78,14 @@ public class Board extends javax.swing.JFrame {
     private void DrawPieces() {
 
         if (Side.equals("white")) {
-            opponentPieces.add(new Rook(0, ChessBoardPanel, "bRook1"));
+            opponentPieces.add(new Rook(0, ChessBoardPanel, "bRook2"));
             opponentPieces.add(new Knight(1, ChessBoardPanel, "bKnight2"));
-            opponentPieces.add(new Bishop(2, ChessBoardPanel, "bBishop1"));
+            opponentPieces.add(new Bishop(2, ChessBoardPanel, "bBishop2"));
             opponentPieces.add(new Queen(3, ChessBoardPanel, "bQueen"));
             opponentPieces.add(new King(4, ChessBoardPanel, "bKing"));
-            opponentPieces.add(new Bishop(5, ChessBoardPanel, "bBishop2"));
+            opponentPieces.add(new Bishop(5, ChessBoardPanel, "bBishop1"));
             opponentPieces.add(new Knight(6, ChessBoardPanel, "bKnight1"));
-            opponentPieces.add(new Rook(7, ChessBoardPanel, "bRook2"));
+            opponentPieces.add(new Rook(7, ChessBoardPanel, "bRook1"));
             for (int i = 1; i <= 8; i++) {
                 opponentPieces.add(new Pawn(16 - i, ChessBoardPanel, "bPawn".concat(String.valueOf(i)), upgradeButtons));
             }
@@ -233,12 +250,7 @@ public class Board extends javax.swing.JFrame {
             selectedPiece = null;
             isSelected = false;
         }
-
-        if (timer.GetIsRunning()) {
-            timer.PauseTimer();
-        } else {
-            timer.ResumeTimer();
-        }
+        ToggleTimer();
     }
 
     private void AttackPiece(String name) {
@@ -258,6 +270,7 @@ public class Board extends javax.swing.JFrame {
                     isSelected = false;
                 }
             });
+            ToggleTimer();
         }
     }
 

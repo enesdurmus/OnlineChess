@@ -60,6 +60,12 @@ public class Timer extends Thread {
         this.start();
     }
 
+    public synchronized void PauseTimer(int increaseTime) {
+        ourTime += increaseTime;
+        clock1.setText(String.valueOf(ourTime));
+        ourTimerRunning = false;
+    }
+
     public synchronized void PauseTimer() {
         ourTimerRunning = false;
     }
