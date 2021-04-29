@@ -61,6 +61,10 @@ public class ServerListener extends Thread {
                         Board.Game.ToggleTimer();
                         System.out.println("Opponent piece " + readAttackInf.get(0) + " is attacking to " + readAttackInf.get(1));
                         break;
+                    case Upgrade:
+                        Board.Game.ReadUpgradeInfo(received);
+                        System.out.println("opponent is upgrading");
+                        break;
                 }
 
             } catch (IOException | ClassNotFoundException ex) {

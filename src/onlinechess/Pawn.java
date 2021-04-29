@@ -133,21 +133,21 @@ public class Pawn extends Piece {
 
     }
 
-    public Piece UpgradePawn(String name, int upgradeCounter) {
+    public Piece UpgradePawn(String name, int upgradeCounter, String side) {
         this.getLabelPiece().getParent().remove(this.getLabelPiece());
         Piece upgradedPawn = null;
         switch (name) {
             case "knight":
-                upgradedPawn = new Knight(getSquare(), getBoard(), this.getName().charAt(0) + "newKnight" + upgradeCounter);
+                upgradedPawn = new Knight(getSquare(), getBoard(), side.charAt(0) + "newKnight" + upgradeCounter);
                 break;
             case "bishop":
-                upgradedPawn = new Bishop(getSquare(), getBoard(), this.getName().charAt(0) + "newBishop" + upgradeCounter);
+                upgradedPawn = new Bishop(getSquare(), getBoard(), side.charAt(0) + "newBishop" + upgradeCounter);
                 break;
             case "rook":
-                upgradedPawn = new Rook(getSquare(), getBoard(), this.getName().charAt(0) + "newRook" + upgradeCounter);
+                upgradedPawn = new Rook(getSquare(), getBoard(), side.charAt(0) + "newRook" + upgradeCounter);
                 break;
             case "queen":
-                upgradedPawn = new Queen(getSquare(), getBoard(), this.getName().charAt(0) + "newQueen" + upgradeCounter);
+                upgradedPawn = new Queen(getSquare(), getBoard(), side.charAt(0) + "newQueen" + upgradeCounter);
                 break;
         }
         CloseUpgradePanel();

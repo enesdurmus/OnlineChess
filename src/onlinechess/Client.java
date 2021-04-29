@@ -77,6 +77,7 @@ public class Client {
     //mesaj gönderme fonksiyonu
     public static void Send(Message msg) {
         try {
+            Client.sOutput.flush();
             Client.sOutput.writeObject(msg);
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);

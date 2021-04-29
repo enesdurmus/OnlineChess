@@ -156,6 +156,13 @@ public class Board extends javax.swing.JFrame {
         allPieces.add(p);
     }
 
+    private void AddUpgradedPawnOpponent(Piece p) {
+        opponentPieces.remove(selectedPiece);
+        allPieces.remove(selectedPiece);
+        opponentPieces.add(p);
+        allPieces.add(p);
+    }
+
     private void FindPiece(String name) {
         myPieces.stream().filter((piece) -> (name.equals(piece.getName()))).forEachOrdered((piece) -> {
             selectedPiece = piece;
@@ -235,9 +242,45 @@ public class Board extends javax.swing.JFrame {
         });
     }
 
+    public void SendUpgradeInfo(String piece, String upgrade, int counter) {
+        ArrayList inf = new ArrayList();
+        inf.add(piece);
+        inf.add(upgrade);
+        inf.add(counter);
+
+        Message msg = new Message(Message.Message_Type.Upgrade);
+        msg.content = inf;
+        Client.Send(msg);
+    }
+
+    public void ReadUpgradeInfo(Message msg) {
+        ArrayList content = (ArrayList) msg.content;
+        String side = String.valueOf(opponentPieces.get(0).getName().charAt(0));
+        Pawn p = (Pawn) FindOpponentPiece((String) content.get(0));
+        switch ((String) content.get(1)) {
+            case "knight":
+                Knight k = (Knight) p.UpgradePawn((String) content.get(1), (int) content.get(2), side);
+                AddUpgradedPawnOpponent(k);
+                break;
+            case "bishop":
+                Bishop b = (Bishop) p.UpgradePawn((String) content.get(1), (int) content.get(2), side);
+                AddUpgradedPawnOpponent(b);
+                break;
+            case "queen":
+                Queen q = (Queen) p.UpgradePawn((String) content.get(1), (int) content.get(2), side);
+                AddUpgradedPawnOpponent(q);
+                System.out.println(q.getName());
+                break;
+            case "rook":
+                Rook r = (Rook) p.UpgradePawn((String) content.get(1), (int) content.get(2), side);
+                AddUpgradedPawnOpponent(r);
+                break;
+        }
+    }
+
     private void MovePiece(int square) {
-        System.out.println(selectedPiece.getName() + " is moving to " + square);
         if (selectedPiece.Move(square)) {
+            System.out.println(selectedPiece.getName() + " is moving to " + square);
             SendMoveInfToServer(selectedPiece.getName(), square);
         }
         selectedPanel.setBackground(previousColor);
@@ -254,8 +297,8 @@ public class Board extends javax.swing.JFrame {
     }
 
     private void AttackPiece(String name) {
-        System.out.println(selectedPiece.getName() + " is attacking to " + name);
         if (selectedPiece.Attack(name)) {
+            System.out.println(selectedPiece.getName() + " is attacking to " + name);
             opponentPieces.stream().filter((piece) -> (name.equals(piece.getName()))).forEachOrdered((piece) -> {
                 allPieces.remove(piece);
                 selectedPanel.setBackground(previousColor);
@@ -592,49 +635,54 @@ public class Board extends javax.swing.JFrame {
     private void knightUpgradeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_knightUpgradeButtonActionPerformed
         Knight k;
         Pawn p = (Pawn) selectedPiece;
-        k = (Knight) p.UpgradePawn("knight", upgradeCounter);
+        k = (Knight) p.UpgradePawn("knight", upgradeCounter, Side);
         AddUpgradedPawn(k);
+        SendUpgradeInfo(selectedPiece.getName(), "knight", upgradeCounter);
         isUpgrading = false;
         selectedPiece = null;
         isSelected = false;
         upgradeCounter++;
+
+
     }//GEN-LAST:event_knightUpgradeButtonActionPerformed
 
     private void bishopUpgradeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bishopUpgradeButtonActionPerformed
         Bishop b;
         Pawn p = (Pawn) selectedPiece;
-        b = (Bishop) p.UpgradePawn("bishop", upgradeCounter);
+        b = (Bishop) p.UpgradePawn("bishop", upgradeCounter, Side);
         AddUpgradedPawn(b);
+        SendUpgradeInfo(selectedPiece.getName(), "bishop", upgradeCounter);
         isUpgrading = false;
         selectedPiece = null;
         isSelected = false;
         upgradeCounter++;
-
 
     }//GEN-LAST:event_bishopUpgradeButtonActionPerformed
 
     private void rookUpgradeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rookUpgradeButtonActionPerformed
         Rook r;
         Pawn p = (Pawn) selectedPiece;
-        r = (Rook) p.UpgradePawn("rook", upgradeCounter);
+        r = (Rook) p.UpgradePawn("rook", upgradeCounter, Side);
         AddUpgradedPawn(r);
+        SendUpgradeInfo(selectedPiece.getName(), "rook", upgradeCounter);
         isUpgrading = false;
         selectedPiece = null;
         isSelected = false;
         upgradeCounter++;
-
 
     }//GEN-LAST:event_rookUpgradeButtonActionPerformed
 
     private void queenUpgradeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_queenUpgradeButtonActionPerformed
         Queen q;
         Pawn p = (Pawn) selectedPiece;
-        q = (Queen) p.UpgradePawn("queen", upgradeCounter);
+        q = (Queen) p.UpgradePawn("queen", upgradeCounter, Side);
         AddUpgradedPawn(q);
+        SendUpgradeInfo(selectedPiece.getName(), "queen", upgradeCounter);
         isUpgrading = false;
         selectedPiece = null;
         isSelected = false;
         upgradeCounter++;
+
 
     }//GEN-LAST:event_queenUpgradeButtonActionPerformed
 
