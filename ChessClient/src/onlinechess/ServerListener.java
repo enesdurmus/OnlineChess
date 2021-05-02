@@ -1,0 +1,78 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package onlinechess;
+
+import Message.Message;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import static onlinechess.Client.sInput;
+
+/**
+ *
+ * @author X550V
+ */
+public class ServerListener extends Thread {
+
+    @Override
+    public void run() {
+        while (Client.socket.isConnected()) {
+            try {
+                Message received = (Message) (sInput.readObject());
+
+                switch (received.type) {
+
+                    case ReturnRoomsNames:
+                        Client.rooms = (ArrayList<String>) received.content;
+                        Client.rooms.forEach((r) -> {
+                            Main.Game.lm1.addElement(r);
+                        });
+                        Main.Game.RefreshRooms();
+                        System.out.println("Reached rooms list from server...");
+
+                        break;
+                    case JoinRoom:
+                        if (Main.Game.isRoomOwner) {
+                            Board.Game.OpponentJoinedTheRoom(received.content.toString());
+                            System.out.println("User " + received.content.toString() + " has joined the room...");
+                        } else {
+                            Main.Game.JoinRoom((ArrayList<String>) received.content);
+                            System.out.println("You have joined the room");
+                        }
+                        Board.Game.StartTimer();
+                        break;
+                    case MovePiece:
+                        ArrayList readMoveInf = (ArrayList) received.content;
+                        Board.Game.ReadMoveInfFromServer(readMoveInf);
+                        Board.Game.isOurTurn = true;
+                        Board.Game.ToggleTimer();
+                        System.out.println("Opponent has made a move " + readMoveInf.get(0) + " is moving to " + (63 - (int) readMoveInf.get(1)));
+                        break;
+                    case Attack:
+                        ArrayList readAttackInf = (ArrayList) received.content;
+                        Board.Game.ReadAttackInfFromServer(readAttackInf);
+                        Board.Game.isOurTurn = true;
+                        Board.Game.ToggleTimer();
+                        System.out.println("Opponent piece " + readAttackInf.get(0) + " is attacking to " + readAttackInf.get(1));
+                        break;
+                    case Upgrade:
+                        Board.Game.ReadUpgradeInfo(received);
+                        System.out.println("opponent is upgrading");
+                        break;
+                    case CheckMate:
+                        Board.Game.ReadCheckMate(received);
+
+                }
+
+            } catch (IOException | ClassNotFoundException ex) {
+
+                Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+                break;
+            }
+        }
+    }
+}
